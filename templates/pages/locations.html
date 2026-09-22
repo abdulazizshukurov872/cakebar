@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Filiallar — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <h1 class="heading" style="margin-bottom:8px;">Filiallarimiz</h1>
+  <p style="color:var(--color-smoke);margin-bottom:32px;">Toshkent bo'ylab {{ branches|length }} ta filialda sizni kutib olamiz.</p>
+
+  <div class="grid-3">
+    {% for b in branches %}
+      <div class="card">
+        <span class="tag mint" style="margin-bottom:16px;display:inline-block;">Filial {{ forloop.counter }}</span>
+        <h3 class="heading-sm" style="margin-bottom:12px;">{{ b.name }}</h3>
+        <p style="color:var(--color-slate);margin-bottom:6px;">{{ b.address }}</p>
+        <p class="mono" style="margin-bottom:6px;">{{ b.phone }}</p>
+        <p style="color:var(--color-smoke);font-size:14px;">{{ b.working_hours }}</p>
+      </div>
+    {% empty %}
+      <div class="empty-state">Filiallar tez orada qo'shiladi</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

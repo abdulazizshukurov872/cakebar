@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block content %}
+<div class="section">
+  <div class="section-head">
+    <h1 class="heading">{% t "products" %}</h1>
+    <form method="get" style="display:flex;gap:8px;max-width:380px;width:100%;">
+      {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+      <input type="text" name="q" class="input" placeholder="{% t 'search_placeholder' %}" value="{{ query }}">
+      <button type="submit" class="pill pill-dark pill-sm">{% t "search" %}</button>
+    </form>
+  </div>
+
+  <div class="shop-layout">
+    <aside class="shop-sidebar">
+      <h3>{% t "categories" %}</h3>
+      <a class="sidebar-link {% if not selected_category %}active{% endif %}" href="{% url 'product_list' %}{% if query %}?q={{ query }}{% endif %}">{% t "see_all" %}</a>
+      {% for c in categories %}
+        <a class="sidebar-link {% if selected_category == c.id|stringformat:'s' %}active{% endif %}"
+           href="?category={{ c.id }}{% if query %}&q={{ query }}{% endif %}">{{ c.name }}</a>
+      {% endfor %}
+      <div class="sidebar-divider"></div>
+      <h3>Refund siyosati</h3>
+      <p style="font-size:13px;color:var(--color-slate);line-height:1.5;">Yetkazilgandan so'ng 72 soat ichida pulingizni qaytarib olishingiz mumkin.</p>
+    </aside>
+
+    <div class="grid-3">
+      {% for p in products %}
+        {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
+      {% empty %}
+        <div class="empty-state" style="grid-column:1/-1;">"{{ query }}" bo'yicha mahsulot topilmadi</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block title %}{% t "admin_panel" %} — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <div class="shop-layout">
+    <aside class="shop-sidebar">
+      <h3>{% t "admin_panel" %}</h3>
+      <a class="sidebar-link" href="{% url 'home' %}">{% t "home" %}</a>
+      <a class="sidebar-link active" href="{% url 'admin_dashboard' %}">{% t "statistics" %}</a>
+      <a class="sidebar-link" href="{% url 'admin:catalog_product_changelist' %}">Mahsulotlar</a>
+      <a class="sidebar-link" href="{% url 'admin:catalog_category_changelist' %}">Kategoriyalar</a>
+      <a class="sidebar-link" href="{% url 'admin:orders_order_changelist' %}">Buyurtmalar</a>
+      <a class="sidebar-link" href="{% url 'admin:refunds_refundrequest_changelist' %}">Qaytarish so'rovlari</a>
+      <a class="sidebar-link" href="{% url 'admin:accounts_user_changelist' %}">Foydalanuvchilar</a>
+      <div class="sidebar-divider"></div>
+      <p style="font-size:13px;color:var(--color-slate);">Siz <b>ADMIN</b> sifatida kirdingiz. To'liq boshqaruv uchun bo'limlarni tanlang — har birida qidiruv, filtr va tahrirlash mavjud.</p>
+    </aside>
+
+    <div>
+      <h1 class="heading" style="margin-bottom:24px;">{% t "statistics" %}</h1>
+      <div class="grid-3" style="margin-bottom:32px;">
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ total_sales|floatformat:0 }} so'm</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Umumiy sotuvlar</div></div>
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ orders_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Buyurtmalar soni</div></div>
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ pending_refunds }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Kutilayotgan qaytarishlar</div></div>
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ refund_rate }}%</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Qaytarishlar foizi</div></div>
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ products_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Mahsulotlar</div></div>
+        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ users_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Foydalanuvchilar</div></div>
+      </div>
+
+      <h2 class="heading-sm" style="margin-bottom:16px;">So'nggi buyurtmalar</h2>
+      <div class="card" style="margin-bottom:32px;padding:0;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr style="background:var(--color-mist-gray);text-align:left;font-size:13px;text-transform:uppercase;">
+            <th style="padding:12px 16px;">ID</th><th style="padding:12px 16px;">Mijoz</th><th style="padding:12px 16px;">Summa</th><th style="padding:12px 16px;">Status</th><th style="padding:12px 16px;"></th>
+          </tr>
+          {% for o in recent_orders %}
+          <tr style="border-top:1px solid var(--color-mist-gray);">
+            <td class="mono" style="padding:12px 16px;">{{ o.id }}</td>
+            <td style="padding:12px 16px;">{{ o.user.phone|default:o.user.username }}</td>
+            <td class="mono" style="padding:12px 16px;">{{ o.total_amount|floatformat:0 }} so'm</td>
+            <td style="padding:12px 16px;"><span class="status-badge status-{{ o.status }}">{{ o.get_status_display }}</span></td>
+            <td style="padding:12px 16px;"><a href="{% url 'admin:orders_order_change' o.id %}" class="pill pill-ghost pill-sm">Ochish</a></td>
+          </tr>
+          {% empty %}<tr><td style="padding:16px;" colspan="5">Buyurtmalar yo'q</td></tr>{% endfor %}
+        </table>
+      </div>
+
+      <h2 class="heading-sm" style="margin-bottom:16px;">So'nggi qaytarish so'rovlari</h2>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr style="background:var(--color-mist-gray);text-align:left;font-size:13px;text-transform:uppercase;">
+            <th style="padding:12px 16px;">Buyurtma</th><th style="padding:12px 16px;">Sabab</th><th style="padding:12px 16px;">Status</th><th style="padding:12px 16px;"></th>
+          </tr>
+          {% for r in recent_refunds %}
+          <tr style="border-top:1px solid var(--color-mist-gray);">
+            <td class="mono" style="padding:12px 16px;">№ {{ r.order.id }}</td>
+            <td style="padding:12px 16px;">{{ r.get_reason_display }}</td>
+            <td style="padding:12px 16px;"><span class="status-badge status-{{ r.status }}">{{ r.get_status_display }}</span></td>
+            <td style="padding:12px 16px;"><a href="{% url 'admin:refunds_refundrequest_change' r.id %}" class="pill pill-ghost pill-sm">Ko'rish</a></td>
+          </tr>
+          {% empty %}<tr><td style="padding:16px;" colspan="4">So'rovlar yo'q</td></tr>{% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

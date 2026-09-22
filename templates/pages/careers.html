@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Karyera — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <h1 class="heading" style="margin-bottom:8px;">Karyera</h1>
+  <p style="color:var(--color-smoke);margin-bottom:32px;">Jamoamizga qo'shiling — hozirda {{ jobs|length }} ta bo'sh o'rin mavjud.</p>
+
+  <div class="orders-list">
+    {% for j in jobs %}
+      <div class="order-card">
+        <div class="order-head">
+          <div>
+            <h3 class="heading-sm" style="font-size:18px;margin-bottom:4px;">{{ j.title }}</h3>
+            <p style="color:var(--color-smoke);font-size:14px;">{{ j.department }} · {{ j.location }}</p>
+          </div>
+          <a href="{% url 'contacts' %}" class="pill pill-ghost pill-sm">Ariza berish</a>
+        </div>
+        {% if j.description %}<p style="color:var(--color-slate);margin-top:8px;">{{ j.description }}</p>{% endif %}
+      </div>
+    {% empty %}
+      <div class="empty-state">Hozircha bo'sh o'rinlar yo'q</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

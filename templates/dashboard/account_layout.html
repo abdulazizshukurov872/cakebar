@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block content %}
+<div class="section">
+  <div class="shop-layout">
+    <aside class="shop-sidebar">
+      <h3>{% t "my_account" %}</h3>
+      <a class="sidebar-link" href="{% url 'home' %}">{% t "home" %}</a>
+      <a class="sidebar-link {% if active == 'account' %}active{% endif %}" href="{% url 'account_home' %}">{% t "overview" %}</a>
+      <a class="sidebar-link {% if active == 'orders' %}active{% endif %}" href="{% url 'order_list' %}">{% t "my_orders" %}</a>
+      <a class="sidebar-link {% if active == 'favorites' %}active{% endif %}" href="{% url 'favorite_list' %}">{% t "favorites" %}</a>
+      <a class="sidebar-link {% if active == 'profile' %}active{% endif %}" href="{% url 'profile' %}">{% t "profile" %}</a>
+      <div class="sidebar-divider"></div>
+      <h3>Wallet</h3>
+      <p class="mono" style="font-size:20px;font-weight:700;">{{ user.balance|floatformat:0 }} so'm</p>
+    </aside>
+    <div>
+      {% block account_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

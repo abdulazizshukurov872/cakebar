@@ -1,0 +1,19 @@
+{% extends "dashboard/account_layout.html" %}
+{% load i18n_extra %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:24px;">{% t "profile" %}</h1>
+<div class="card">
+  <p style="margin-bottom:16px;"><span class="tag mint">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></span></p>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-row">
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <button type="submit" class="pill pill-dark full">{% t "save" %}</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+from django import template
+
+from ..translations import get_text
+
+register = template.Library()
+
+
+def _current_lang(context):
+    request = context.get("request")
+    if request is not None:
+        return request.session.get("lang", "uz")
+    return "uz"
+
+
+@register.simple_tag(takes_context=True)
+def t(context, key):
+    return get_text(_current_lang(context), key)
+
+
+@register.simple_tag(takes_context=True)
+def status_t(context, status_code):
+    return get_text(_current_lang(context), f"status_{status_code}")

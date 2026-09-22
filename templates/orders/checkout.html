@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block content %}
+<div class="section narrow">
+  <h1 class="heading" style="margin-bottom:24px;">{% t "place_order" %}</h1>
+  <div class="card">
+    <p style="margin-bottom:8px;">{% t "total" %}: <b class="mono">{{ cart.get_total_price|floatformat:0 }} so'm</b></p>
+    <p style="margin-bottom:16px;font-size:13px;color:var(--color-smoke);">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">{{ form.address.label_tag }}{{ form.address }}{{ form.address.errors }}</div>
+      <div class="form-row">{{ form.payment_method.label_tag }}{{ form.payment_method }}{{ form.payment_method.errors }}</div>
+      <button type="submit" class="pill pill-dark full">{% t "confirm_order" %}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "dashboard/account_layout.html" %}
+{% load i18n_extra %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:24px;">{% t "my_orders" %}</h1>
+
+<div class="orders-list">
+  {% for o in orders %}
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-id">№ {{ o.id }}</div>
+          <div style="font-size:13px;color:var(--color-smoke);">{{ o.created_at|date:"d.m.Y H:i" }}</div>
+        </div>
+        <span class="status-badge status-{{ o.status }}">{% status_t o.status %}</span>
+      </div>
+      <div class="order-items">
+        {% for i in o.items.all %}{{ i.product_name }} x{{ i.quantity }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      </div>
+
+      {% if o.status != "bekor" and o.status != "qaytarildi" %}
+        <div style="font-size:13px;color:var(--color-slate);margin:8px 0;">
+          {% if o.status == "yetkazildi" %}
+            {% status_t "yetkazildi" %}: {{ o.delivered_at|date:"d.m.Y H:i" }}
+          {% else %}
+            {{ o.estimated_delivery_at|date:"d.m.Y H:i" }}
+          {% endif %}
+          {% if o.courier_name %} · {{ o.courier_name }} ({{ o.courier_phone }}){% endif %}
+        </div>
+      {% endif %}
+
+      <div class="order-foot">
+        <span class="mono" style="font-size:18px;font-weight:700;">{{ o.total_amount|floatformat:0 }} so'm</span>
+        <div style="display:flex;gap:8px;">
+          {% if o.can_cancel %}
+            <form method="post" action="{% url 'order_cancel' o.id %}" onsubmit="return confirm('Buyurtmani bekor qilishni tasdiqlaysizmi?');">
+              {% csrf_token %}
+              <button type="submit" class="pill danger pill-sm">{% t "cancel_order" %}</button>
+            </form>
+          {% endif %}
+          {% if o.can_request_refund %}
+            <a href="{% url 'refund_create' o.id %}" class="pill pill-ghost pill-sm">{% t "request_refund" %}</a>
+          {% endif %}
+        </div>
+      </div>
+      {% if o.status == "yetkazildi" and not o.refund_request %}
+        {% if o.refund_hours_left > 0 %}
+          <div class="deadline-note">Qaytarish uchun yana {{ o.refund_hours_left }} soat qoldi (72 soat ichida)</div>
+        {% else %}
+          <div class="deadline-note">Qaytarish muddati tugagan</div>
+        {% endif %}
+      {% endif %}
+      {% if o.refund_request %}
+        {% with r=o.refund_request %}
+        <div class="refund-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <b>{% t "request_refund" %}</b>
+            <span class="status-badge status-{{ r.status }}">{{ r.get_status_display }}</span>
+          </div>
+          <div>Sabab: {{ r.get_reason_display }}</div>
+          {% if r.comment %}<div>Izoh: {{ r.comment }}</div>{% endif %}
+          {% if r.status == "tasdiqlandi" %}<div class="mono" style="margin-top:6px;">Qaytarilgan summa: {{ r.refund_amount|floatformat:0 }} so'm</div>{% endif %}
+          {% if r.admin_comment %}<div style="margin-top:6px;font-style:italic;">Admin: "{{ r.admin_comment }}"</div>{% endif %}
+        </div>
+        {% endwith %}
+      {% endif %}
+    </div>
+  {% empty %}
+    <div class="empty-state">{% t "empty_state_no_orders" %}<br><a href="{% url 'product_list' %}" class="pill pill-ghost" style="margin-top:12px;">{% t "shop_now" %}</a></div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Tadbirlar — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <h1 class="heading" style="margin-bottom:24px;">Tadbirlar uchun buyurtma</h1>
+  <div class="grid-3">
+    <div class="card">
+      <h3 class="heading-sm" style="margin-bottom:10px;">To'y va nikoh</h3>
+      <p style="color:var(--color-slate);">Ko'p qavatli tortlar, shirinlik stollari va individual dizayn.</p>
+    </div>
+    <div class="card">
+      <h3 class="heading-sm" style="margin-bottom:10px;">Korporativ tadbirlar</h3>
+      <p style="color:var(--color-slate);">Kompaniyangiz logotipi bilan shirinliklar va katta hajmdagi buyurtmalar.</p>
+    </div>
+    <div class="card">
+      <h3 class="heading-sm" style="margin-bottom:10px;">Tug'ilgan kunlar</h3>
+      <p style="color:var(--color-slate);">Bolalar va kattalar uchun mavzuli tortlar va dekorlar.</p>
+    </div>
+  </div>
+  <div class="card-dark" style="margin-top:32px;">
+    <h3 class="heading-sm" style="margin-bottom:12px;">Tadbiringizni rejalashtiramizmi?</h3>
+    <p style="color:var(--color-ash);margin-bottom:20px;">Kamida 3 kun oldin bog'laning — sizga mos menyu va narxni taklif qilamiz.</p>
+    <a href="{% url 'contacts' %}" class="pill pill-mint">Bog'lanish</a>
+  </div>
+</div>
+{% endblock %}

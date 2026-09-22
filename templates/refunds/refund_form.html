@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section narrow">
+  <h1 class="heading" style="margin-bottom:24px;">Qaytarish so'rovi</h1>
+  <div class="card">
+    <p style="font-size:14px;color:var(--color-smoke);margin-bottom:16px;">Buyurtma № {{ order.id }} — {{ order.total_amount|floatformat:0 }} so'm</p>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-row">{{ form.reason.label_tag }}{{ form.reason }}{{ form.reason.errors }}</div>
+      <div class="form-row">{{ form.comment.label_tag }}{{ form.comment }}{{ form.comment.errors }}</div>
+      <div class="form-row">{{ form.image.label_tag }}{{ form.image }}{{ form.image.errors }}</div>
+      <button type="submit" class="pill pill-dark full">Yuborish</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

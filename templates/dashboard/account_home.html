@@ -1,0 +1,28 @@
+{% extends "dashboard/account_layout.html" %}
+{% load i18n_extra %}
+{% block title %}{% t "my_account" %} — CakeBar{% endblock %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:24px;">{{ user.phone|default:user.username }}</h1>
+
+<div class="grid-3" style="margin-bottom:32px;">
+  <div class="card"><div class="stat-num" style="color:var(--color-carbon-black);font-size:40px;">{{ orders_count }}</div><div class="stat-label" style="color:var(--color-smoke);">{% t "my_orders" %}</div></div>
+  <div class="card"><div class="stat-num" style="color:var(--color-carbon-black);font-size:40px;">{{ favorites_count }}</div><div class="stat-label" style="color:var(--color-smoke);">{% t "favorites" %}</div></div>
+  <div class="card"><div class="stat-num" style="color:var(--color-carbon-black);font-size:40px;">{{ pending_refunds }}</div><div class="stat-label" style="color:var(--color-smoke);">{% t "request_refund" %}</div></div>
+</div>
+
+<h2 class="heading-sm" style="margin-bottom:16px;">{% t "my_orders" %}</h2>
+<div class="orders-list">
+  {% for o in orders %}
+    <div class="order-card">
+      <div class="order-head">
+        <div class="order-id">№ {{ o.id }}</div>
+        <span class="status-badge status-{{ o.status }}">{% status_t o.status %}</span>
+      </div>
+      <div class="order-items">{% for i in o.items.all %}{{ i.product_name }} x{{ i.quantity }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+      <span class="mono" style="font-weight:700;">{{ o.total_amount|floatformat:0 }} so'm</span>
+    </div>
+  {% empty %}
+    <div class="empty-state">{% t "empty_state_no_orders" %}</div>
+  {% endfor %}
+</div>
+{% endblock %}

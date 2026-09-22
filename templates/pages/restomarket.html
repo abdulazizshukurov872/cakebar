@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Restomarket — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <h1 class="heading" style="margin-bottom:24px;">Restomarket</h1>
+  <div class="grid-2" style="align-items:start;">
+    <div>
+      <p style="color:var(--color-slate);line-height:1.7;margin-bottom:16px;">
+        Restomarket — bu restoran va kafelar uchun ulgurji shirinlik yetkazib berish xizmatimiz. Mehmonxonalar, do'stona kafelar va tadbir tashkilotchilari
+        uchun maxsus narxlarda, katta hajmda va barqaror sifatda mahsulot yetkazamiz.
+      </p>
+      <ul style="color:var(--color-slate);line-height:2;padding-left:20px;">
+        <li>Minimal buyurtma — 50 dona</li>
+        <li>Ulgurji narxlarda 15-30% chegirma</li>
+        <li>Haftalik jadval asosida muntazam yetkazish</li>
+        <li>Shaxsiy menejer biriktiriladi</li>
+      </ul>
+    </div>
+    <div class="card-dark">
+      <h3 class="heading-sm" style="margin-bottom:12px;">Hamkor bo'lish</h3>
+      <p style="color:var(--color-ash);margin-bottom:20px;">Biznesingiz uchun ariza qoldiring, 24 soat ichida bog'lanamiz.</p>
+      <a href="{% url 'contacts' %}" class="pill pill-mint">Bog'lanish</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% load static i18n_extra %}
+<!DOCTYPE html>
+<html lang="{{ CUR_LANG }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}CakeBar — Shirinliklar do'koni{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="{% url 'home' %}" class="logo">CakeBar</a>
+    <nav class="nav-links">
+      <a href="{% url 'home' %}">{% t "home" %}</a>
+      <a href="{% url 'product_list' %}">{% t "products" %}</a>
+      {% if user.is_authenticated %}<a href="{% url 'order_list' %}">{% t "my_orders" %}</a>{% endif %}
+    </nav>
+    <form method="get" action="{% url 'product_list' %}" class="nav-search">
+      <input type="text" name="q" placeholder="{% t 'search_placeholder' %}" value="{{ request.GET.q }}">
+    </form>
+    <div class="nav-actions">
+      <div class="lang-switch">
+        {% for code, label in LANGUAGES %}
+          <a href="{% url 'set_lang' code %}" class="{% if CUR_LANG == code %}active{% endif %}">{{ label }}</a>
+        {% endfor %}
+      </div>
+      <a href="{% url 'cart_detail' %}" class="pill pill-ghost pill-sm">{% t "cart" %} ({{ cart|length }})</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="pill pill-ghost pill-sm">{{ user.phone|default:user.username }}{% if user.is_staff %} (admin){% endif %}</a>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="pill pill-dark pill-sm">{% t "logout" %}</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="pill pill-ghost pill-sm">{% t "login" %}</a>
+        <a href="{% url 'signup' %}" class="pill pill-dark pill-sm">{% t "signup" %}</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div style="max-width:280px;">
+      <div class="logo">CakeBar</div>
+      <p>Shirinliklar onlayn-do'koni<br>Toshkent, O'zbekiston</p>
+    </div>
+    <div>
+      <p style="color:var(--color-paper-white);font-weight:700;text-transform:uppercase;margin-bottom:12px;font-size:13px;letter-spacing:0.04em;">{% t "contact_us" %}</p>
+      <p class="footer-mail">hello@cakebar.uz</p>
+      <p>+998 71 200 00 00</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

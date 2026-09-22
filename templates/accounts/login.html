@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block content %}
+<div class="section narrow">
+  <h1 class="heading" style="margin-bottom:24px;">{% t "login" %}</h1>
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-row">
+          {{ field.label_tag }}
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+      <button type="submit" class="pill pill-dark full">{% t "login" %}</button>
+    </form>
+    <p style="margin-top:16px;font-size:14px;">Hisobingiz yo'qmi? <a href="{% url 'signup' %}" style="text-decoration:underline;">{% t "signup" %}</a></p>
+  </div>
+</div>
+{% endblock %}

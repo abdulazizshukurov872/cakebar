@@ -1,0 +1,12 @@
+{% extends "dashboard/account_layout.html" %}
+{% load i18n_extra %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:24px;">{% t "favorites" %}</h1>
+<div class="grid-2">
+  {% for p in products %}
+    {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
+  {% empty %}
+    <div class="empty-state">{% t "favorites" %}: 0</div>
+  {% endfor %}
+</div>
+{% endblock %}

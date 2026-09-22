@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Kontaktlar — CakeBar{% endblock %}
+{% block content %}
+<div class="section">
+  <h1 class="heading" style="margin-bottom:24px;">Kontaktlar</h1>
+  <div class="grid-2" style="align-items:start;">
+    <div class="card">
+      <h3 class="heading-sm" style="margin-bottom:16px;">Markaziy ofis</h3>
+      <p style="margin-bottom:8px;">Toshkent sh., Chilonzor tumani, Bunyodkor ko'chasi 12</p>
+      <p class="mono" style="margin-bottom:8px;">+998 71 200 00 00</p>
+      <p class="footer-mail" style="margin-bottom:8px;">hello@cakebar.uz</p>
+      <p style="color:var(--color-smoke);">Har kuni 09:00 – 22:00</p>
+    </div>
+    <div class="card">
+      <h3 class="heading-sm" style="margin-bottom:16px;">Ijtimoiy tarmoqlar</h3>
+      <p style="margin-bottom:8px;">Instagram: @cakebar.uz</p>
+      <p style="margin-bottom:8px;">Telegram: @cakebar_uz</p>
+      <p>Facebook: /cakebar.uz</p>
+    </div>
+  </div>
+
+  {% if branches %}
+  <h2 class="heading-sm" style="margin:40px 0 16px;">Barcha filiallar</h2>
+  <div class="grid-3">
+    {% for b in branches %}
+      <div class="card">
+        <h3 class="heading-sm" style="margin-bottom:8px;font-size:18px;">{{ b.name }}</h3>
+        <p style="color:var(--color-slate);font-size:14px;margin-bottom:4px;">{{ b.address }}</p>
+        <p class="mono" style="font-size:14px;">{{ b.phone }}</p>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

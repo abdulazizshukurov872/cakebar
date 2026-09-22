@@ -1,0 +1,33 @@
+{% load i18n_extra %}
+<div class="product-card {% if not p.in_stock %}out-of-stock{% endif %}">
+  <a href="{% url 'product_detail' p.id %}" class="product-img" style="display:block;">
+    {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">{% endif %}
+  </a>
+  <div class="product-body">
+    <span class="product-cat">{{ p.category.name }}</span>
+    <a href="{% url 'product_detail' p.id %}" class="product-name">{{ p.name }}</a>
+    <span style="font-size:13px;color:var(--color-smoke);">★ {{ p.rating }} {% if not p.in_stock %}<span class="tag dark" style="margin-left:6px;">{% t "out_of_stock" %}</span>{% endif %}</span>
+    <div class="product-price-row">
+      <span>
+        {% if p.discount_price %}
+          <span class="price-old">{{ p.price|floatformat:0 }} so'm</span>
+          <span class="price">{{ p.discount_price|floatformat:0 }} so'm</span>
+        {% else %}
+          <span class="price">{{ p.price|floatformat:0 }} so'm</span>
+        {% endif %}
+      </span>
+      <div style="display:flex;gap:6px;">
+        <form method="post" action="{% url 'favorite_toggle' p.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="fav-btn {% if p.id in favorite_ids %}active{% endif %}" title="Sevimlilarga">{% if p.id in favorite_ids %}♥{% else %}♡{% endif %}</button>
+        </form>
+        <form method="post" action="{% url 'cart_add' p.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="pill pill-dark pill-sm" {% if not p.in_stock %}disabled{% endif %}>{% t "add_to_cart" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

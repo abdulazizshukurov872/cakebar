@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block content %}
+<div class="hero">
+  <div>
+    <div class="tag-row"><span class="tag mint">{% t "new_collection" %}</span><span class="tag yellow">{% t "delivered_today" %}</span></div>
+    <h1 class="display display-xl">{% t "hero_title" %}</h1>
+    <p>{% t "hero_subtitle" %}</p>
+    <a href="{% url 'product_list' %}" class="pill pill-dark">{% t "shop_now" %}</a>
+  </div>
+  <div class="hero-img">
+    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=900&q=80&auto=format&fit=crop" alt="CakeBar tort">
+  </div>
+</div>
+
+<div class="section">
+  <div class="shop-layout">
+    <aside class="shop-sidebar">
+      <h3>{% t "footer_links" %}</h3>
+      <a class="sidebar-link" href="{% url 'home' %}">{% t "home" %}</a>
+      <a class="sidebar-link" href="{% url 'about' %}">{% t "about" %}</a>
+      <a class="sidebar-link" href="{% url 'locations' %}">{% t "locations" %}</a>
+      <a class="sidebar-link" href="{% url 'restomarket' %}">{% t "restomarket" %}</a>
+      <a class="sidebar-link" href="{% url 'production' %}">{% t "production" %}</a>
+      <a class="sidebar-link" href="{% url 'events' %}">{% t "events" %}</a>
+      <a class="sidebar-link" href="{% url 'contacts' %}">{% t "contacts" %}</a>
+      <a class="sidebar-link" href="{% url 'careers' %}">{% t "careers" %}</a>
+      <div class="sidebar-divider"></div>
+      <h3>{% t "categories" %}</h3>
+      {% for c in categories %}
+        <a class="sidebar-link" href="{% url 'product_list' %}?category={{ c.id }}">{{ c.name }}</a>
+      {% endfor %}
+    </aside>
+
+    <div>
+      <div class="section-head">
+        <h2 class="heading">{% t "todays_offer" %}</h2>
+        <a href="{% url 'product_list' %}" class="pill pill-ghost pill-sm">{% t "see_all" %}</a>
+      </div>
+      <div class="grid-3">
+        {% for p in featured %}
+          {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
+        {% endfor %}
+      </div>
+
+      <div class="card-dark stat-band" style="padding:48px 32px;margin-top:64px;">
+        <div><div class="stat-num">500+</div><div class="stat-label">{% t "satisfied_customers" %}</div></div>
+        <div><div class="stat-num">{{ categories.count }}+</div><div class="stat-label">{% t "categories" %}</div></div>
+        <div><div class="stat-num">72</div><div class="stat-label">{% t "refund_hours_label" %}</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
