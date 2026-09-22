@@ -1,0 +1,17 @@
+{% extends "dashboard/account_layout.html" %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:24px;">Bildirishnomalar</h1>
+<div class="orders-list">
+  {% for n in notifications %}
+    <a href="{{ n.link|default:'#' }}" class="order-card" style="display:block;text-decoration:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <b>{{ n.title }}</b>
+        <span style="font-size:12px;color:var(--color-smoke);">{{ n.created_at|date:"d.m.Y H:i" }}</span>
+      </div>
+      <p style="color:var(--color-slate);">{{ n.message }}</p>
+    </a>
+  {% empty %}
+    <div class="empty-state">Bildirishnomalar yo'q</div>
+  {% endfor %}
+</div>
+{% endblock %}

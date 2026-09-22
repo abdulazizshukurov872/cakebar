@@ -6,6 +6,8 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from catalog.models import Product
+from notifications.services import notify
+from promotions.models import PromoCode
 
 from .cart import Cart
 from .forms import CheckoutForm
@@ -53,8 +55,21 @@ def checkout(request):
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            total = cart.get_total_price()
+            subtotal = cart.get_total_price()
             payment_method = form.cleaned_data["payment_method"]
+            promo_code_str = form.cleaned_data.get("promo_code", "").strip().upper()
+
+            promo = None
+            discount_amount = 0
+            if promo_code_str:
+                promo = PromoCode.objects.filter(code=promo_code_str).first()
+                if not promo or not promo.is_valid():
+                    messages.error(request, "Promo-kod yaroqsiz yoki muddati o'tgan")
+                    return render(request, "orders/checkout.html", {"form": form, "cart": cart})
+                discount_amount = subtotal * promo.discount_percent // 100
+
+            total = subtotal - discount_amount
+
             if payment_method == "wallet" and request.user.balance < total:
                 messages.error(request, f"Wallet balansingizda yetarli mablag' yo'q ({request.user.balance:.0f} so'm). Boshqa to'lov usulini tanlang.")
                 return render(request, "orders/checkout.html", {"form": form, "cart": cart})
@@ -62,6 +77,8 @@ def checkout(request):
             order = form.save(commit=False)
             order.user = request.user
             order.total_amount = total
+            order.discount_amount = discount_amount
+            order.promo_code = promo_code_str if promo else ""
             order.save()
             for line in cart:
                 OrderItem.objects.create(
@@ -75,8 +92,12 @@ def checkout(request):
             if payment_method == "wallet":
                 request.user.balance = request.user.balance - total
                 request.user.save(update_fields=["balance"])
+            if promo:
+                promo.used_count += 1
+                promo.save(update_fields=["used_count"])
 
             cart.clear()
+            notify(request.user, "Buyurtma qabul qilindi", f"Buyurtma #{order.id} qabul qilindi, {total:.0f} so'm.", link="/my-orders/")
             messages.success(request, "Buyurtma qabul qilindi! Taxminiy yetkazish vaqtini \"Buyurtmalarim\" bo'limida ko'rishingiz mumkin.")
             return redirect("order_list")
     else:

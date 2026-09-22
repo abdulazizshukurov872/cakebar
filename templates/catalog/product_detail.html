@@ -5,12 +5,15 @@
 <div class="section">
   <div class="grid-2" style="align-items:start;">
     <div class="product-img" style="height:420px;border-radius:32px;">
-      {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}">{% endif %}
+      {% if p.image_url %}<img src="{{ p.image_url }}" alt="{% pfield p 'name' %}">{% endif %}
     </div>
     <div>
-      <span class="tag" style="margin-bottom:16px;display:inline-block;">{{ p.category.name }}</span>
-      <h1 class="heading" style="margin-bottom:8px;">{{ p.name }}</h1>
-      <p style="color:var(--color-smoke);margin-bottom:16px;">★ {{ p.rating }} {% if not p.in_stock %}· <span class="tag dark">Tugagan</span>{% endif %}</p>
+      <span class="tag" style="margin-bottom:16px;display:inline-block;">{% pfield p.category "name" %}</span>
+      <h1 class="heading" style="margin-bottom:8px;">{% pfield p "name" %}</h1>
+      <p style="color:var(--color-smoke);margin-bottom:16px;">
+        ★ {% if avg_rating %}{{ avg_rating|floatformat:1 }} ({{ reviews.count }} sharh){% else %}{{ p.rating }} — hali sharh yo'q{% endif %}
+        {% if not p.in_stock %}· <span class="tag dark">Tugagan</span>{% endif %}
+      </p>
 
       <div style="margin-bottom:24px;">
         {% if p.discount_price %}
@@ -36,14 +39,42 @@
 
       {% if p.description %}
         <h3 class="heading-sm" style="margin-bottom:8px;">Tavsif</h3>
-        <p style="color:var(--color-slate);margin-bottom:24px;">{{ p.description }}</p>
+        <p style="color:var(--color-slate);margin-bottom:24px;">{% pfield p "description" %}</p>
       {% endif %}
 
       {% if p.composition %}
         <h3 class="heading-sm" style="margin-bottom:8px;">Tarkibi</h3>
-        <p style="color:var(--color-slate);">{{ p.composition }}</p>
+        <p style="color:var(--color-slate);">{% pfield p "composition" %}</p>
       {% endif %}
     </div>
+  </div>
+
+  <div style="margin-top:64px;max-width:700px;">
+    <h2 class="heading-sm" style="margin-bottom:16px;">Sharhlar {% if reviews %}({{ reviews.count }}){% endif %}</h2>
+
+    {% if can_review %}
+      <div class="card" style="margin-bottom:24px;">
+        <form method="post" action="{% url 'review_create' p.id %}">
+          {% csrf_token %}
+          <div class="form-row">{{ review_form.rating.label_tag }}{{ review_form.rating }}</div>
+          <div class="form-row">{{ review_form.comment.label_tag }}{{ review_form.comment }}</div>
+          <button type="submit" class="pill pill-dark pill-sm">{% if my_review %}Sharhni yangilash{% else %}Sharh qoldirish{% endif %}</button>
+        </form>
+      </div>
+    {% endif %}
+
+    {% for r in reviews %}
+      <div class="order-card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <b>{{ r.user.phone|default:r.user.username }}</b>
+          <span>{% for i in "12345" %}{% if forloop.counter <= r.rating %}★{% else %}☆{% endif %}{% endfor %}</span>
+        </div>
+        {% if r.comment %}<p style="color:var(--color-slate);">{{ r.comment }}</p>{% endif %}
+        <p style="font-size:12px;color:var(--color-smoke);margin-top:6px;">{{ r.created_at|date:"d.m.Y" }}</p>
+      </div>
+    {% empty %}
+      <p style="color:var(--color-smoke);">Hali sharhlar yo'q. Birinchi bo'lib fikringizni qoldiring!</p>
+    {% endfor %}
   </div>
 
   {% if related %}

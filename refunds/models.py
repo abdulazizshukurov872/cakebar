@@ -39,6 +39,8 @@ class RefundRequest(models.Model):
         return f"Refund #{self.pk} — {self.order}"
 
     def approve(self, amount, admin_comment=""):
+        from notifications.services import notify
+
         self.status = "tasdiqlandi"
         self.refund_amount = amount
         self.admin_comment = admin_comment
@@ -50,9 +52,13 @@ class RefundRequest(models.Model):
             user = self.user
             user.balance = user.balance + amount
             user.save(update_fields=["balance"])
+        notify(self.user, "Qaytarish tasdiqlandi", f"Buyurtma #{self.order.id} uchun {amount:.0f} so'm qaytarildi.", link="/my-orders/")
 
     def reject(self, admin_comment=""):
+        from notifications.services import notify
+
         self.status = "rad_etildi"
         self.admin_comment = admin_comment
         self.resolved_at = timezone.now()
         self.save()
+        notify(self.user, "Qaytarish so'rovi rad etildi", admin_comment or "Sabab ko'rsatilmagan.", link="/my-orders/")

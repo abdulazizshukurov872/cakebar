@@ -10,6 +10,7 @@
       {% csrf_token %}
       <div class="form-row">{{ form.address.label_tag }}{{ form.address }}{{ form.address.errors }}</div>
       <div class="form-row">{{ form.payment_method.label_tag }}{{ form.payment_method }}{{ form.payment_method.errors }}</div>
+      <div class="form-row">{{ form.promo_code.label_tag }}{{ form.promo_code }}{{ form.promo_code.errors }}</div>
       <button type="submit" class="pill pill-dark full">{% t "confirm_order" %}</button>
     </form>
   </div>

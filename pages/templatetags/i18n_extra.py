@@ -20,3 +20,8 @@ def t(context, key):
 @register.simple_tag(takes_context=True)
 def status_t(context, status_code):
     return get_text(_current_lang(context), f"status_{status_code}")
+
+
+@register.simple_tag(takes_context=True)
+def pfield(context, obj, field):
+    return obj.localized(field, _current_lang(context))

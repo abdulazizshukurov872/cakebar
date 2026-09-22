@@ -3,7 +3,9 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField("Nomi", max_length=100)
+    name = models.CharField("Nomi (uz)", max_length=100)
+    name_ru = models.CharField("Nomi (ru)", max_length=100, blank=True)
+    name_en = models.CharField("Nomi (en)", max_length=100, blank=True)
     parent = models.ForeignKey(
         "self", verbose_name="Ota kategoriya", null=True, blank=True,
         related_name="children", on_delete=models.CASCADE,
@@ -16,11 +18,22 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def localized(self, field, lang):
+        if lang == "uz":
+            return getattr(self, field, "")
+        return getattr(self, f"{field}_{lang}", "") or getattr(self, field, "")
+
 
 class Product(models.Model):
-    name = models.CharField("Nomi", max_length=150)
-    description = models.TextField("Tavsif", blank=True)
-    composition = models.TextField("Tarkibi", blank=True, help_text="Masalan: un, shakar, tuxum, sariyog', vanil")
+    name = models.CharField("Nomi (uz)", max_length=150)
+    name_ru = models.CharField("Nomi (ru)", max_length=150, blank=True)
+    name_en = models.CharField("Nomi (en)", max_length=150, blank=True)
+    description = models.TextField("Tavsif (uz)", blank=True)
+    description_ru = models.TextField("Tavsif (ru)", blank=True)
+    description_en = models.TextField("Tavsif (en)", blank=True)
+    composition = models.TextField("Tarkibi (uz)", blank=True, help_text="Masalan: un, shakar, tuxum, sariyog', vanil")
+    composition_ru = models.TextField("Tarkibi (ru)", blank=True)
+    composition_en = models.TextField("Tarkibi (en)", blank=True)
     image_url = models.URLField("Rasm manzili (URL)", max_length=500, blank=True)
     category = models.ForeignKey(Category, verbose_name="Kategoriya", related_name="products", on_delete=models.CASCADE)
     price = models.DecimalField("Narx", max_digits=12, decimal_places=0)
@@ -40,6 +53,11 @@ class Product(models.Model):
     @property
     def current_price(self):
         return self.discount_price or self.price
+
+    def localized(self, field, lang):
+        if lang == "uz":
+            return getattr(self, field, "")
+        return getattr(self, f"{field}_{lang}", "") or getattr(self, field, "")
 
 
 class Favorite(models.Model):

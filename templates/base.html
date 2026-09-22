@@ -30,6 +30,9 @@
       </div>
       <a href="{% url 'cart_detail' %}" class="pill pill-ghost pill-sm">{% t "cart" %} ({{ cart|length }})</a>
       {% if user.is_authenticated %}
+        <a href="{% url 'notification_list' %}" class="bell-btn" title="Bildirishnomalar">
+          🔔{% if unread_notifications_count %}<span class="badge">{{ unread_notifications_count }}</span>{% endif %}
+        </a>
         <a href="{% url 'dashboard' %}" class="pill pill-ghost pill-sm">{{ user.phone|default:user.username }}{% if user.is_staff %} (admin){% endif %}</a>
         <form method="post" action="{% url 'logout' %}" style="display:inline;">
           {% csrf_token %}

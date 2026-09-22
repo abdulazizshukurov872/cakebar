@@ -28,7 +28,7 @@
       <div class="sidebar-divider"></div>
       <h3>{% t "categories" %}</h3>
       {% for c in categories %}
-        <a class="sidebar-link" href="{% url 'product_list' %}?category={{ c.id }}">{{ c.name }}</a>
+        <a class="sidebar-link" href="{% url 'product_list' %}?category={{ c.id }}">{% pfield c "name" %}</a>
       {% endfor %}
     </aside>
 

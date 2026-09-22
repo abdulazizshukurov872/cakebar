@@ -10,6 +10,8 @@ urlpatterns = [
     path('', include('refunds.urls')),
     path('', include('dashboard.urls')),
     path('', include('pages.urls')),
+    path('', include('reviews.urls')),
+    path('', include('notifications.urls')),
     path('accounts/', include('accounts.urls')),
 ]
 

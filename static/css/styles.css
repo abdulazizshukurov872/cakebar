@@ -54,6 +54,11 @@ a { color: inherit; text-decoration: none; }
 .nav-links a { font-size: 15px; font-weight: 500; color: var(--color-slate); }
 .nav-links a:hover { color: var(--color-carbon-black); }
 .nav-actions { display: flex; align-items: center; gap: 8px; }
+.bell-btn { position: relative; font-size: 18px; padding: 6px; }
+.bell-btn .badge {
+  position: absolute; top: -2px; right: -2px; background: #e63946; color: #fff;
+  font-size: 10px; font-weight: 700; border-radius: 9999px; padding: 1px 5px; min-width: 16px; text-align: center;
+}
 .lang-switch { display: flex; gap: 2px; background: var(--color-mist-gray); border-radius: 48px; padding: 3px; }
 .lang-switch a { padding: 6px 10px; border-radius: 48px; font-size: 12px; font-weight: 700; color: var(--color-slate); }
 .lang-switch a.active { background: var(--color-carbon-black); color: var(--color-paper-white); }
@@ -182,6 +187,18 @@ form ul.errorlist { color: #c0392b; font-size: 13px; list-style: none; padding: 
 .status-rad_etildi { background: #ffdcdc; color: #a30000; }
 .refund-box { background: var(--color-mist-gray); border-radius: 16px; padding: 16px; margin-top: 12px; font-size: 14px; }
 .deadline-note { font-size: 13px; color: var(--color-smoke); margin-top: 4px; }
+
+.status-stepper { display: flex; align-items: flex-start; margin: 16px 0; }
+.status-stepper .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.status-stepper .step:not(:last-child)::after {
+  content: ""; position: absolute; top: 6px; left: 50%; width: 100%; height: 2px; background: var(--color-ash); z-index: 0;
+}
+.status-stepper .step.done:not(:last-child)::after { background: var(--color-carbon-black); }
+.status-stepper .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--color-ash); z-index: 1; margin-bottom: 6px; }
+.status-stepper .step.done .dot { background: var(--color-carbon-black); }
+.status-stepper .step.current .dot { background: var(--color-mint-chip); border: 2px solid var(--color-carbon-black); }
+.status-stepper .label { font-size: 10px; text-transform: uppercase; color: var(--color-smoke); text-align: center; }
+.status-stepper .step.done .label, .status-stepper .step.current .label { color: var(--color-carbon-black); font-weight: 700; }
 
 /* ---------- MESSAGES ---------- */
 .messages { max-width: 1200px; margin: 16px auto 0; padding: 0 24px; list-style: none; }

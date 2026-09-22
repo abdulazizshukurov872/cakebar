@@ -1,11 +1,11 @@
 {% load i18n_extra %}
 <div class="product-card {% if not p.in_stock %}out-of-stock{% endif %}">
   <a href="{% url 'product_detail' p.id %}" class="product-img" style="display:block;">
-    {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">{% endif %}
+    {% if p.image_url %}<img src="{{ p.image_url }}" alt="{% pfield p 'name' %}" loading="lazy">{% endif %}
   </a>
   <div class="product-body">
-    <span class="product-cat">{{ p.category.name }}</span>
-    <a href="{% url 'product_detail' p.id %}" class="product-name">{{ p.name }}</a>
+    <span class="product-cat">{% pfield p.category "name" %}</span>
+    <a href="{% url 'product_detail' p.id %}" class="product-name">{% pfield p "name" %}</a>
     <span style="font-size:13px;color:var(--color-smoke);">★ {{ p.rating }} {% if not p.in_stock %}<span class="tag dark" style="margin-left:6px;">{% t "out_of_stock" %}</span>{% endif %}</span>
     <div class="product-price-row">
       <span>

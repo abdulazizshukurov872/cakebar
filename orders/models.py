@@ -26,6 +26,8 @@ class Order(models.Model):
     payment_method = models.CharField("To'lov usuli", max_length=10, choices=PAYMENT_CHOICES, default="naqd")
     status = models.CharField("Status", max_length=20, choices=STATUS_CHOICES, default="yangi")
     total_amount = models.DecimalField("Umumiy summa", max_digits=12, decimal_places=0, default=0)
+    promo_code = models.CharField("Promo-kod", max_length=32, blank=True)
+    discount_amount = models.DecimalField("Chegirma summasi", max_digits=12, decimal_places=0, default=0)
     created_at = models.DateTimeField("Yaratilgan sana", auto_now_add=True)
     delivered_at = models.DateTimeField("Yetkazilgan sana", null=True, blank=True)
     estimated_delivery_at = models.DateTimeField("Taxminiy yetkazish vaqti", null=True, blank=True)
@@ -47,6 +49,11 @@ class Order(models.Model):
     ]
 
     def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        old_status = None
+        if not is_new:
+            old_status = Order.objects.filter(pk=self.pk).values_list("status", flat=True).first()
+
         if not self.estimated_delivery_at and self.status != "bekor":
             self.estimated_delivery_at = (self.created_at or timezone.now()) + timezone.timedelta(hours=2)
         if self.status in ("tasdiqlangan", "tayyorlanmoqda", "yetkazilmoqda", "yetkazildi") and not self.courier_name:
@@ -54,6 +61,24 @@ class Order(models.Model):
         if self.status == "yetkazildi" and not self.delivered_at:
             self.delivered_at = timezone.now()
         super().save(*args, **kwargs)
+
+        if not is_new and old_status and old_status != self.status:
+            from notifications.services import notify
+            notify(
+                self.user,
+                "Buyurtma holati yangilandi",
+                f"Buyurtma #{self.pk}: {self.get_status_display()}",
+                link="/my-orders/",
+            )
+
+    STATUS_STEPS = ["yangi", "tasdiqlangan", "tayyorlanmoqda", "yetkazilmoqda", "yetkazildi"]
+
+    @property
+    def status_step_index(self):
+        try:
+            return self.STATUS_STEPS.index(self.status)
+        except ValueError:
+            return -1
 
     @property
     def can_cancel(self):

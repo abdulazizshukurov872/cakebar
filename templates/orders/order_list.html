@@ -18,6 +18,21 @@
       </div>
 
       {% if o.status != "bekor" and o.status != "qaytarildi" %}
+        <div class="status-stepper">
+          {% for step in o.STATUS_STEPS %}
+            <div class="step {% if forloop.counter0 <= o.status_step_index %}done{% endif %} {% if forloop.counter0 == o.status_step_index %}current{% endif %}">
+              <span class="dot"></span>
+              <span class="label">{% status_t step %}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if o.discount_amount %}
+        <div style="font-size:13px;color:#0a6b0a;margin-bottom:4px;">Promo-kod "{{ o.promo_code }}": −{{ o.discount_amount|floatformat:0 }} so'm</div>
+      {% endif %}
+
+      {% if o.status != "bekor" and o.status != "qaytarildi" %}
         <div style="font-size:13px;color:var(--color-slate);margin:8px 0;">
           {% if o.status == "yetkazildi" %}
             {% status_t "yetkazildi" %}: {{ o.delivered_at|date:"d.m.Y H:i" }}
