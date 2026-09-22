@@ -24,7 +24,10 @@
     </aside>
 
     <div>
-      <h1 class="heading" style="margin-bottom:24px;">{% t "statistics" %}</h1>
+      <div class="section-head" style="margin-bottom:24px;">
+        <h1 class="heading" style="margin:0;">{% t "statistics" %}</h1>
+        <a href="{% url 'export_orders_csv' %}" class="pill pill-ghost pill-sm">⬇ Buyurtmalarni CSV qilib yuklash</a>
+      </div>
 
       <div class="grid-3" style="margin-bottom:16px;">
         <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ total_sales|floatformat:0 }} so'm</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Umumiy sotuvlar</div></div>
@@ -89,6 +92,19 @@
             <p style="color:var(--color-smoke);font-size:14px;">Hali sotuv yo'q</p>
           {% endfor %}
         </div>
+      </div>
+
+      <div class="card" style="margin-bottom:32px;">
+        <div class="chart-card-head"><h3>Eng faol mijozlar</h3><span>umumiy xarid bo'yicha</span></div>
+        {% for c in top_customers %}
+          <div class="hbar-row">
+            <span class="hbar-label" title="{{ c.user__phone|default:c.user__username }}">{{ c.user__phone|default:c.user__username }} · {{ c.orders }} buyurtma</span>
+            <div class="hbar-track"><div class="hbar-fill" style="width:{{ c.pct }}%;"></div></div>
+            <span class="hbar-value">{{ c.total|floatformat:0 }}</span>
+          </div>
+        {% empty %}
+          <p style="color:var(--color-smoke);font-size:14px;">Hali xaridor yo'q</p>
+        {% endfor %}
       </div>
 
       {% if low_stock %}

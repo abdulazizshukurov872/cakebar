@@ -1,9 +1,11 @@
+import csv
 import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import F, Sum
+from django.db.models import Count, F, Sum
 from django.db.models.functions import TruncDate
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -75,6 +77,17 @@ def admin_dashboard(request):
 
     low_stock = Product.objects.filter(in_stock=False)[:6]
 
+    # --- top 5 customers by spend (magnitude ranking) ---
+    top_customers = (
+        paid_orders.values("user__id", "user__username", "user__phone")
+        .annotate(total=Sum("total_amount"), orders=Count("id"))
+        .order_by("-total")[:5]
+    )
+    top_customers = list(top_customers)
+    max_customer_total = max((c["total"] for c in top_customers), default=0) or 1
+    for c in top_customers:
+        c["pct"] = round(c["total"] / max_customer_total * 100, 1)
+
     context = {
         "total_sales": total_sales,
         "orders_count": orders.count(),
@@ -90,8 +103,24 @@ def admin_dashboard(request):
         "by_category": by_category,
         "low_stock": low_stock,
         "low_stock_count": Product.objects.filter(in_stock=False).count(),
+        "top_customers": top_customers,
     }
     return render(request, "dashboard/admin_dashboard.html", context)
+
+
+@superadmin_required
+def export_orders_csv(request):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = f'attachment; filename="cakebar-buyurtmalar-{timezone.localdate()}.csv"'
+    writer = csv.writer(response)
+    writer.writerow(["ID", "Mijoz", "Telefon", "Manzil", "To'lov usuli", "Status", "Summa", "Promo-kod", "Chegirma", "Yaratilgan sana"])
+    for o in Order.objects.select_related("user").order_by("-created_at"):
+        writer.writerow([
+            o.id, o.user.get_full_name() or o.user.username, o.user.phone, o.address,
+            o.get_payment_method_display(), o.get_status_display(), o.total_amount,
+            o.promo_code, o.discount_amount, o.created_at.strftime("%Y-%m-%d %H:%M"),
+        ])
+    return response
 
 
 @login_required

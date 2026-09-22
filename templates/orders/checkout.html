@@ -5,12 +5,23 @@
   <h1 class="heading" style="margin-bottom:24px;">{% t "place_order" %}</h1>
   <div class="card">
     <p style="margin-bottom:8px;">{% t "total" %}: <b class="mono">{{ cart.get_total_price|floatformat:0 }} so'm</b></p>
-    <p style="margin-bottom:16px;font-size:13px;color:var(--color-smoke);">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></p>
+    <p style="margin-bottom:4px;font-size:13px;color:var(--color-smoke);">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></p>
+    <p style="margin-bottom:16px;font-size:13px;color:var(--color-smoke);">Loyallik ballaringiz: <b class="mono">{{ user.loyalty_points }}</b> (1 ball = 100 so'm)</p>
     <form method="post">
       {% csrf_token %}
-      <div class="form-row">{{ form.address.label_tag }}{{ form.address }}{{ form.address.errors }}</div>
+      <div class="form-row">
+        {{ form.address.label_tag }}{{ form.address }}{{ form.address.errors }}
+        <datalist id="saved-addresses">
+          {% for a in addresses %}<option value="{{ a.address_line }}">{{ a.label }}</option>{% endfor %}
+        </datalist>
+      </div>
       <div class="form-row">{{ form.payment_method.label_tag }}{{ form.payment_method }}{{ form.payment_method.errors }}</div>
       <div class="form-row">{{ form.promo_code.label_tag }}{{ form.promo_code }}{{ form.promo_code.errors }}</div>
+      {% if user.loyalty_points > 0 %}
+        <div class="form-row" style="display:flex;align-items:center;gap:8px;">
+          {{ form.use_points }}{{ form.use_points.label_tag }}
+        </div>
+      {% endif %}
       <button type="submit" class="pill pill-dark full">{% t "confirm_order" %}</button>
     </form>
   </div>

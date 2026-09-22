@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-from .models import User
+from .models import Address, User
 
 
 class SignUpForm(forms.Form):
@@ -35,3 +35,10 @@ class ProfileForm(forms.ModelForm):
             "phone": "Telefon",
             "address": "Manzil",
         }
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ("label", "address_line", "is_default")
+        labels = {"label": "Nomi (Uy, Ish...)", "address_line": "To'liq manzil", "is_default": "Asosiy manzil qilish"}

@@ -29,7 +29,12 @@
       {% endif %}
 
       {% if o.discount_amount %}
-        <div style="font-size:13px;color:#0a6b0a;margin-bottom:4px;">Promo-kod "{{ o.promo_code }}": −{{ o.discount_amount|floatformat:0 }} so'm</div>
+        <div style="font-size:13px;color:#0a6b0a;margin-bottom:4px;">
+          Chegirma{% if o.promo_code %} (promo-kod "{{ o.promo_code }}"){% endif %}{% if o.points_used %} + {{ o.points_used }} ball{% endif %}: −{{ o.discount_amount|floatformat:0 }} so'm
+        </div>
+      {% endif %}
+      {% if o.points_earned %}
+        <div style="font-size:13px;color:var(--color-slate);margin-bottom:4px;">+{{ o.points_earned }} ball qo'shildi</div>
       {% endif %}
 
       {% if o.status != "bekor" and o.status != "qaytarildi" %}
@@ -46,6 +51,10 @@
       <div class="order-foot">
         <span class="mono" style="font-size:18px;font-weight:700;">{{ o.total_amount|floatformat:0 }} so'm</span>
         <div style="display:flex;gap:8px;">
+          <form method="post" action="{% url 'order_reorder' o.id %}">
+            {% csrf_token %}
+            <button type="submit" class="pill pill-ghost pill-sm">Yana buyurtma qilish</button>
+          </form>
           {% if o.can_cancel %}
             <form method="post" action="{% url 'order_cancel' o.id %}" onsubmit="return confirm('Buyurtmani bekor qilishni tasdiqlaysizmi?');">
               {% csrf_token %}

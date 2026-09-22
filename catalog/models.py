@@ -39,6 +39,7 @@ class Product(models.Model):
     price = models.DecimalField("Narx", max_digits=12, decimal_places=0)
     discount_price = models.DecimalField("Chegirma narx", max_digits=12, decimal_places=0, null=True, blank=True)
     in_stock = models.BooleanField("Mavjud", default=True)
+    stock_quantity = models.PositiveIntegerField("Zaxira miqdori", default=20)
     rating = models.DecimalField("Reyting", max_digits=2, decimal_places=1, default=4.5)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -49,6 +50,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.stock_quantity == 0:
+            self.in_stock = False
+        super().save(*args, **kwargs)
+
+    def reduce_stock(self, quantity):
+        self.stock_quantity = max(0, self.stock_quantity - quantity)
+        if self.stock_quantity == 0:
+            self.in_stock = False
+        self.save(update_fields=["stock_quantity", "in_stock"])
 
     @property
     def current_price(self):

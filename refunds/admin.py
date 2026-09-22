@@ -15,6 +15,8 @@ class RefundRequestAdmin(admin.ModelAdmin):
         "requested_at", "resolved_at",
     )
 
+    actions = ["approve_selected", "reject_selected"]
+
     def save_model(self, request, obj, form, change):
         previous_status = None
         if change:
@@ -28,3 +30,19 @@ class RefundRequestAdmin(admin.ModelAdmin):
             obj.reject(obj.admin_comment)
             return
         super().save_model(request, obj, form, change)
+
+    @admin.action(description="Tanlanganlarni tasdiqlash (to'liq summa)")
+    def approve_selected(self, request, queryset):
+        count = 0
+        for refund in queryset.filter(status="kutilmoqda"):
+            refund.approve(refund.order.total_amount, "Ommaviy tasdiqlandi")
+            count += 1
+        self.message_user(request, f"{count} ta so'rov tasdiqlandi.")
+
+    @admin.action(description="Tanlanganlarni rad etish")
+    def reject_selected(self, request, queryset):
+        count = 0
+        for refund in queryset.filter(status="kutilmoqda"):
+            refund.reject("Ommaviy rad etildi")
+            count += 1
+        self.message_user(request, f"{count} ta so'rov rad etildi.")

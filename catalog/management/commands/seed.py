@@ -288,7 +288,8 @@ class Command(BaseCommand):
                 name_ru=name_ru, description_ru=desc_ru, composition_ru=comp_ru,
                 name_en=name_en, description_en=desc_en, composition_en=comp_en,
                 category=cats[cat_key], price=price, discount_price=discount,
-                in_stock=in_stock, rating=rating, image_url=image_url,
+                in_stock=in_stock, stock_quantity=0 if not in_stock else 25,
+                rating=rating, image_url=image_url,
             )
 
         self.stdout.write(self.style.SUCCESS(f"{len(cats)} kategoriya va {len(PRODUCTS)} mahsulot yaratildi (UZ/RU/EN)."))

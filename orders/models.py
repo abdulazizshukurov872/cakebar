@@ -28,6 +28,8 @@ class Order(models.Model):
     total_amount = models.DecimalField("Umumiy summa", max_digits=12, decimal_places=0, default=0)
     promo_code = models.CharField("Promo-kod", max_length=32, blank=True)
     discount_amount = models.DecimalField("Chegirma summasi", max_digits=12, decimal_places=0, default=0)
+    points_used = models.PositiveIntegerField("Ishlatilgan ballar", default=0)
+    points_earned = models.PositiveIntegerField("Berilgan ballar", default=0)
     created_at = models.DateTimeField("Yaratilgan sana", auto_now_add=True)
     delivered_at = models.DateTimeField("Yetkazilgan sana", null=True, blank=True)
     estimated_delivery_at = models.DateTimeField("Taxminiy yetkazish vaqti", null=True, blank=True)
@@ -47,6 +49,9 @@ class Order(models.Model):
         ("Javlon Karimov", "+998 91 222 33 44"),
         ("Sardor Yusupov", "+998 93 333 44 55"),
     ]
+
+    POINTS_PER_SOM = 1000   # 1 ball har 1000 so'mga
+    POINT_VALUE = 100       # 1 ball = 100 so'm chegirma
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
@@ -70,6 +75,18 @@ class Order(models.Model):
                 f"Buyurtma #{self.pk}: {self.get_status_display()}",
                 link="/my-orders/",
             )
+            if self.status == "yetkazildi" and not self.points_earned:
+                earned = int(self.total_amount // self.POINTS_PER_SOM)
+                if earned > 0:
+                    self.points_earned = earned
+                    Order.objects.filter(pk=self.pk).update(points_earned=earned)
+                    self.user.loyalty_points += earned
+                    self.user.save(update_fields=["loyalty_points"])
+                    notify(
+                        self.user, "Ball qo'shildi",
+                        f"Buyurtma #{self.pk} uchun {earned} ball hisobingizga qo'shildi.",
+                        link="/my-orders/",
+                    )
 
     STATUS_STEPS = ["yangi", "tasdiqlangan", "tayyorlanmoqda", "yetkazilmoqda", "yetkazildi"]
 

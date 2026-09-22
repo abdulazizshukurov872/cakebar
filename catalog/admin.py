@@ -11,9 +11,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "price", "discount_price", "in_stock", "rating")
+    list_display = ("name", "category", "price", "discount_price", "stock_quantity", "in_stock", "rating")
     list_filter = ("category", "in_stock")
-    list_editable = ("in_stock", "discount_price")
+    list_editable = ("in_stock", "discount_price", "stock_quantity")
     search_fields = ("name", "composition")
 
 

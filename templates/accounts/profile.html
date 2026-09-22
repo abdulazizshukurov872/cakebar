@@ -2,8 +2,13 @@
 {% load i18n_extra %}
 {% block account_content %}
 <h1 class="heading" style="margin-bottom:24px;">{% t "profile" %}</h1>
-<div class="card">
-  <p style="margin-bottom:16px;"><span class="tag mint">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></span></p>
+<div class="card" style="margin-bottom:24px;">
+  <div class="tag-row" style="margin-bottom:0;">
+    <span class="tag mint">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></span>
+    <span class="tag yellow">Ballar: <b class="mono">{{ user.loyalty_points }}</b></span>
+  </div>
+</div>
+<div class="card" style="margin-bottom:24px;">
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -14,6 +19,29 @@
       </div>
     {% endfor %}
     <button type="submit" class="pill pill-dark full">{% t "save" %}</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2 class="heading-sm" style="margin-bottom:16px;">Saqlangan manzillar</h2>
+  {% for a in addresses %}
+    <div class="alert-row">
+      <span><b>{{ a.label }}</b>{% if a.is_default %} <span class="tag mint" style="padding:2px 10px;font-size:11px;">Asosiy</span>{% endif %}<br><span style="color:var(--color-slate);font-size:13px;">{{ a.address_line }}</span></span>
+      <form method="post" action="{% url 'address_delete' a.id %}" onsubmit="return confirm('O\'chirishni tasdiqlaysizmi?');">
+        {% csrf_token %}
+        <button type="submit" class="pill danger pill-sm">O'chirish</button>
+      </form>
+    </div>
+  {% empty %}
+    <p style="color:var(--color-smoke);font-size:14px;margin-bottom:16px;">Hali manzil saqlanmagan</p>
+  {% endfor %}
+
+  <form method="post" action="{% url 'address_add' %}" style="margin-top:16px;">
+    {% csrf_token %}
+    <div class="form-row">{{ address_form.label.label_tag }}{{ address_form.label }}</div>
+    <div class="form-row">{{ address_form.address_line.label_tag }}{{ address_form.address_line }}</div>
+    <div class="form-row" style="display:flex;align-items:center;gap:8px;">{{ address_form.is_default }}{{ address_form.is_default.label_tag }}</div>
+    <button type="submit" class="pill pill-ghost">+ Manzil qo'shish</button>
   </form>
 </div>
 {% endblock %}

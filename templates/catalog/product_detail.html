@@ -12,7 +12,7 @@
       <h1 class="heading" style="margin-bottom:8px;">{% pfield p "name" %}</h1>
       <p style="color:var(--color-smoke);margin-bottom:16px;">
         ★ {% if avg_rating %}{{ avg_rating|floatformat:1 }} ({{ reviews.count }} sharh){% else %}{{ p.rating }} — hali sharh yo'q{% endif %}
-        {% if not p.in_stock %}· <span class="tag dark">Tugagan</span>{% endif %}
+        {% if not p.in_stock %}· <span class="tag dark">Tugagan</span>{% elif p.stock_quantity <= 5 %}· <span class="tag yellow">Faqat {{ p.stock_quantity }} dona qoldi</span>{% endif %}
       </p>
 
       <div style="margin-bottom:24px;">
