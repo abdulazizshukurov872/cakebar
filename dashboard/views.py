@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 
 from accounts.models import User
@@ -8,15 +7,17 @@ from catalog.models import Favorite, Product
 from orders.models import Order
 from refunds.models import RefundRequest
 
+superadmin_required = user_passes_test(lambda u: u.is_active and u.is_superuser, login_url="login")
+
 
 @login_required
 def role_redirect(request):
-    if request.user.is_staff:
+    if request.user.is_superuser:
         return redirect("admin_dashboard")
     return redirect("account_home")
 
 
-@staff_member_required
+@superadmin_required
 def admin_dashboard(request):
     orders = Order.objects.all()
     refunds = RefundRequest.objects.all()
@@ -30,7 +31,7 @@ def admin_dashboard(request):
         "orders_count": orders.count(),
         "pending_refunds": pending_refunds,
         "refund_rate": refund_rate,
-        "users_count": User.objects.filter(is_staff=False).count(),
+        "users_count": User.objects.filter(is_superuser=False).count(),
         "products_count": Product.objects.count(),
         "recent_orders": orders[:8],
         "recent_refunds": refunds[:5],
@@ -40,8 +41,8 @@ def admin_dashboard(request):
 
 @login_required
 def account_home(request):
-    if request.user.is_staff:
-        messages.info(request, "Siz ADMIN sifatida kirdingiz — admin panelga yo'naltirildingiz.")
+    if request.user.is_superuser:
+        messages.info(request, "Siz SUPERADMIN sifatida kirdingiz — admin panelga yo'naltirildingiz.")
         return redirect("admin_dashboard")
     orders = Order.objects.filter(user=request.user)[:5]
     favorites_count = Favorite.objects.filter(user=request.user).count()

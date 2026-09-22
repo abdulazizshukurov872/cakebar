@@ -33,7 +33,7 @@
         <a href="{% url 'notification_list' %}" class="bell-btn" title="Bildirishnomalar">
           🔔{% if unread_notifications_count %}<span class="badge">{{ unread_notifications_count }}</span>{% endif %}
         </a>
-        <a href="{% url 'dashboard' %}" class="pill pill-ghost pill-sm">{{ user.phone|default:user.username }}{% if user.is_staff %} (admin){% endif %}</a>
+        <a href="{% url 'dashboard' %}" class="pill pill-ghost pill-sm">{{ user.phone|default:user.username }}{% if user.is_superuser %} (superadmin){% endif %}</a>
         <form method="post" action="{% url 'logout' %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="pill pill-dark pill-sm">{% t "logout" %}</button>
