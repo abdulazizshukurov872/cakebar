@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
@@ -5,7 +6,7 @@ from django.utils import timezone
 class PromoCode(models.Model):
     code = models.CharField("Kod", max_length=32, unique=True)
     description = models.CharField("Tavsif", max_length=150, blank=True)
-    discount_percent = models.PositiveSmallIntegerField("Chegirma (%)")
+    discount_percent = models.PositiveSmallIntegerField("Chegirma (%)", validators=[MinValueValidator(1), MaxValueValidator(100)])
     valid_until = models.DateTimeField("Amal qilish muddati", null=True, blank=True)
     max_uses = models.PositiveIntegerField("Maksimal ishlatilish soni", null=True, blank=True)
     used_count = models.PositiveIntegerField("Ishlatilgan soni", default=0)

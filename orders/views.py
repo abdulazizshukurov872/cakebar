@@ -58,6 +58,15 @@ def checkout(request):
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
+            for line in cart:
+                if line["qty"] > line["product"].stock_quantity:
+                    messages.error(
+                        request,
+                        f"\"{line['product'].name}\" dan faqat {line['product'].stock_quantity} dona qoldi. "
+                        f"Savatdagi miqdorni kamaytiring.",
+                    )
+                    return render(request, "orders/checkout.html", {"form": form, "cart": cart, "addresses": addresses})
+
             subtotal = cart.get_total_price()
             payment_method = form.cleaned_data["payment_method"]
             promo_code_str = form.cleaned_data.get("promo_code", "").strip().upper()
@@ -72,7 +81,7 @@ def checkout(request):
                     return render(request, "orders/checkout.html", {"form": form, "cart": cart, "addresses": addresses})
                 discount_amount = subtotal * promo.discount_percent // 100
 
-            after_promo = subtotal - discount_amount
+            after_promo = max(0, subtotal - discount_amount)
 
             points_used = 0
             points_discount = 0
@@ -82,7 +91,7 @@ def checkout(request):
                 points_used = int(points_discount // Order.POINT_VALUE)
                 points_discount = points_used * Order.POINT_VALUE
 
-            total = after_promo - points_discount
+            total = max(0, after_promo - points_discount)
 
             if payment_method == "wallet" and request.user.balance < total:
                 messages.error(request, f"Wallet balansingizda yetarli mablag' yo'q ({request.user.balance:.0f} so'm). Boshqa to'lov usulini tanlang.")
@@ -142,6 +151,14 @@ def order_cancel(request, order_id):
         return redirect("order_list")
     order.status = "bekor"
     order.save()
+    for item in order.items.select_related("product"):
+        if item.product:
+            item.product.stock_quantity += item.quantity
+            item.product.in_stock = True
+            item.product.save(update_fields=["stock_quantity", "in_stock"])
+    if order.points_used:
+        request.user.loyalty_points += order.points_used
+        request.user.save(update_fields=["loyalty_points"])
     if order.payment_method == "wallet":
         request.user.balance = request.user.balance + order.total_amount
         request.user.save(update_fields=["balance"])

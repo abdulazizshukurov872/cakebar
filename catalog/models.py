@@ -52,14 +52,12 @@ class Product(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self.stock_quantity == 0:
-            self.in_stock = False
+        self.in_stock = self.stock_quantity > 0
         super().save(*args, **kwargs)
 
     def reduce_stock(self, quantity):
         self.stock_quantity = max(0, self.stock_quantity - quantity)
-        if self.stock_quantity == 0:
-            self.in_stock = False
+        self.in_stock = self.stock_quantity > 0
         self.save(update_fields=["stock_quantity", "in_stock"])
 
     @property

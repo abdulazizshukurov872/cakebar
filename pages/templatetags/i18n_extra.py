@@ -23,5 +23,10 @@ def status_t(context, status_code):
 
 
 @register.simple_tag(takes_context=True)
+def reason_t(context, reason_code):
+    return get_text(_current_lang(context), f"reason_{reason_code}")
+
+
+@register.simple_tag(takes_context=True)
 def pfield(context, obj, field):
     return obj.localized(field, _current_lang(context))

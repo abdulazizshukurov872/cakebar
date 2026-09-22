@@ -78,11 +78,11 @@
         <div class="refund-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <b>{% t "request_refund" %}</b>
-            <span class="status-badge status-{{ r.status }}">{{ r.get_status_display }}</span>
+            <span class="status-badge status-{{ r.status }}">{% status_t r.status %}</span>
           </div>
-          <div>Sabab: {{ r.get_reason_display }}</div>
-          {% if r.comment %}<div>Izoh: {{ r.comment }}</div>{% endif %}
-          {% if r.status == "tasdiqlandi" %}<div class="mono" style="margin-top:6px;">Qaytarilgan summa: {{ r.refund_amount|floatformat:0 }} so'm</div>{% endif %}
+          <div>{% t "reason_label" %}: {% reason_t r.reason %}</div>
+          {% if r.comment %}<div>{% t "comment_label" %}: {{ r.comment }}</div>{% endif %}
+          {% if r.status == "tasdiqlandi" %}<div class="mono" style="margin-top:6px;">{% t "refunded_amount" %}: {{ r.refund_amount|floatformat:0 }} so'm</div>{% endif %}
           {% if r.admin_comment %}<div style="margin-top:6px;font-style:italic;">Admin: "{{ r.admin_comment }}"</div>{% endif %}
         </div>
         {% endwith %}

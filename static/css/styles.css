@@ -250,4 +250,10 @@ form ul.errorlist { color: #c0392b; font-size: 13px; list-style: none; padding: 
   .nav-links { display: none; }
   .display-xl { font-size: 44px; }
   .hbar-label { width: 90px; }
+  .status-stepper { overflow-x: auto; justify-content: flex-start; gap: 4px; padding-bottom: 4px; }
+  .status-stepper .step { flex: 0 0 64px; }
+  .status-stepper .label { font-size: 9px; }
+  .chart-bars { gap: 4px; }
+  .chart-bar-value { font-size: 9px; }
+  .chart-bar-label { font-size: 9px; }
 }

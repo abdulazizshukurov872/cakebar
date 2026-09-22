@@ -13,7 +13,8 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "category", "price", "discount_price", "stock_quantity", "in_stock", "rating")
     list_filter = ("category", "in_stock")
-    list_editable = ("in_stock", "discount_price", "stock_quantity")
+    list_editable = ("discount_price", "stock_quantity")
+    readonly_fields = ("in_stock",)
     search_fields = ("name", "composition")
 
 

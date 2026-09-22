@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import AddressForm, ProfileForm, SignUpForm
-from .models import Address
+from .models import Address, User
 
 
 def signup(request):
@@ -26,7 +26,14 @@ def profile(request):
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save()
+            new_phone = form.cleaned_data["phone"].strip()
+            if new_phone and new_phone != request.user.username and User.objects.filter(username=new_phone).exclude(pk=request.user.pk).exists():
+                messages.error(request, "Bu telefon raqam bilan boshqa hisob allaqachon mavjud")
+                return render(request, "accounts/profile.html", {"form": form, "addresses": Address.objects.filter(user=request.user), "address_form": AddressForm(), "active": "profile"})
+            user = form.save(commit=False)
+            if new_phone:
+                user.username = new_phone
+            user.save()
             messages.success(request, "Profil saqlandi")
             return redirect("profile")
     else:
