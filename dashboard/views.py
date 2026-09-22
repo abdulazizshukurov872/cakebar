@@ -1,10 +1,15 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import F, Sum
+from django.db.models.functions import TruncDate
 from django.shortcuts import redirect, render
+from django.utils import timezone
 
 from accounts.models import User
 from catalog.models import Favorite, Product
-from orders.models import Order
+from orders.models import Order, OrderItem
 from refunds.models import RefundRequest
 
 superadmin_required = user_passes_test(lambda u: u.is_active and u.is_superuser, login_url="login")
@@ -21,20 +26,70 @@ def role_redirect(request):
 def admin_dashboard(request):
     orders = Order.objects.all()
     refunds = RefundRequest.objects.all()
-    total_sales = sum((o.total_amount for o in orders.exclude(status="bekor")), 0)
+    paid_orders = orders.exclude(status="bekor")
+    total_sales = sum((o.total_amount for o in paid_orders), 0)
     pending_refunds = refunds.filter(status="kutilmoqda").count()
+    new_orders = orders.filter(status="yangi").count()
     refunded_count = refunds.filter(status="tasdiqlandi").count()
     refund_rate = round((refunded_count / orders.count()) * 100, 1) if orders.count() else 0
+
+    # --- last-7-days sales, one bar per day (magnitude, single series) ---
+    today = timezone.localdate()
+    days = [today - datetime.timedelta(days=i) for i in range(6, -1, -1)]
+    by_day = dict(
+        paid_orders.filter(created_at__date__gte=days[0])
+        .annotate(day=TruncDate("created_at"))
+        .values("day")
+        .annotate(total=Sum("total_amount"))
+        .values_list("day", "total")
+    )
+    sales_by_day = [{"label": d.strftime("%d.%m"), "value": float(by_day.get(d, 0) or 0)} for d in days]
+    max_day_value = max((d["value"] for d in sales_by_day), default=0) or 1
+    for d in sales_by_day:
+        d["pct"] = round(d["value"] / max_day_value * 100, 1)
+        d["peak"] = d["value"] == max_day_value and d["value"] > 0
+
+    # --- top 5 products by quantity sold (magnitude ranking) ---
+    top_products = (
+        OrderItem.objects.exclude(order__status="bekor")
+        .values("product_name")
+        .annotate(qty=Sum("quantity"), revenue=Sum(F("price") * F("quantity")))
+        .order_by("-qty")[:5]
+    )
+    top_products = list(top_products)
+    max_qty = max((p["qty"] for p in top_products), default=0) or 1
+    for p in top_products:
+        p["pct"] = round(p["qty"] / max_qty * 100, 1)
+
+    # --- revenue by category, top 6 (magnitude ranking) ---
+    by_category = (
+        OrderItem.objects.exclude(order__status="bekor")
+        .values(cat=F("product__category__name"))
+        .annotate(revenue=Sum(F("price") * F("quantity")))
+        .order_by("-revenue")[:6]
+    )
+    by_category = list(by_category)
+    max_cat_revenue = max((c["revenue"] for c in by_category), default=0) or 1
+    for c in by_category:
+        c["pct"] = round(c["revenue"] / max_cat_revenue * 100, 1)
+
+    low_stock = Product.objects.filter(in_stock=False)[:6]
 
     context = {
         "total_sales": total_sales,
         "orders_count": orders.count(),
         "pending_refunds": pending_refunds,
+        "new_orders": new_orders,
         "refund_rate": refund_rate,
         "users_count": User.objects.filter(is_superuser=False).count(),
         "products_count": Product.objects.count(),
         "recent_orders": orders[:8],
         "recent_refunds": refunds[:5],
+        "sales_by_day": sales_by_day,
+        "top_products": top_products,
+        "by_category": by_category,
+        "low_stock": low_stock,
+        "low_stock_count": Product.objects.filter(in_stock=False).count(),
     }
     return render(request, "dashboard/admin_dashboard.html", context)
 

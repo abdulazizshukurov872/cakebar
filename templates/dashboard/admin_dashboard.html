@@ -12,21 +12,96 @@
       <a class="sidebar-link" href="{% url 'admin:catalog_category_changelist' %}">Kategoriyalar</a>
       <a class="sidebar-link" href="{% url 'admin:orders_order_changelist' %}">Buyurtmalar</a>
       <a class="sidebar-link" href="{% url 'admin:refunds_refundrequest_changelist' %}">Qaytarish so'rovlari</a>
+      <a class="sidebar-link" href="{% url 'admin:promotions_promocode_changelist' %}">Promo-kodlar</a>
+      <a class="sidebar-link" href="{% url 'admin:reviews_review_changelist' %}">Sharhlar</a>
+      <a class="sidebar-link" href="{% url 'admin:pages_location_changelist' %}">Filiallar</a>
       <a class="sidebar-link" href="{% url 'admin:accounts_user_changelist' %}">Foydalanuvchilar</a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-link" href="{% url 'admin:catalog_product_add' %}">+ Mahsulot qo'shish</a>
+      <a class="sidebar-link" href="{% url 'admin:promotions_promocode_add' %}">+ Promo-kod qo'shish</a>
       <div class="sidebar-divider"></div>
       <p style="font-size:13px;color:var(--color-slate);">Siz <b>SUPERADMIN</b> sifatida kirdingiz. To'liq boshqaruv uchun bo'limlarni tanlang — har birida qidiruv, filtr va tahrirlash mavjud.</p>
     </aside>
 
     <div>
       <h1 class="heading" style="margin-bottom:24px;">{% t "statistics" %}</h1>
-      <div class="grid-3" style="margin-bottom:32px;">
+
+      <div class="grid-3" style="margin-bottom:16px;">
         <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ total_sales|floatformat:0 }} so'm</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Umumiy sotuvlar</div></div>
         <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ orders_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Buyurtmalar soni</div></div>
-        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ pending_refunds }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Kutilayotgan qaytarishlar</div></div>
         <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ refund_rate }}%</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Qaytarishlar foizi</div></div>
-        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ products_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Mahsulotlar</div></div>
-        <div class="card"><div class="mono" style="font-size:28px;font-weight:700;">{{ users_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Foydalanuvchilar</div></div>
       </div>
+
+      <div class="grid-3" style="margin-bottom:32px;">
+        <a href="{% url 'admin:orders_order_changelist' %}?status__exact=yangi" class="card" style="display:block;position:relative;">
+          {% if new_orders %}<span class="alert-dot"></span>{% endif %}
+          <div class="mono" style="font-size:28px;font-weight:700;">{{ new_orders }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Tasdiq kutayotgan yangi buyurtma</div>
+        </a>
+        <a href="{% url 'admin:refunds_refundrequest_changelist' %}?status__exact=kutilmoqda" class="card" style="display:block;position:relative;">
+          {% if pending_refunds %}<span class="alert-dot"></span>{% endif %}
+          <div class="mono" style="font-size:28px;font-weight:700;">{{ pending_refunds }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Kutilayotgan qaytarish so'rovi</div>
+        </a>
+        <a href="{% url 'admin:catalog_product_changelist' %}?in_stock__exact=0" class="card" style="display:block;position:relative;">
+          {% if low_stock_count %}<span class="alert-dot"></span>{% endif %}
+          <div class="mono" style="font-size:28px;font-weight:700;">{{ low_stock_count }}</div><div style="color:var(--color-smoke);font-size:13px;text-transform:uppercase;margin-top:4px;">Zaxirada yo'q mahsulot</div>
+        </a>
+      </div>
+
+      <div class="card" style="margin-bottom:32px;">
+        <div class="chart-card-head">
+          <h3>Savdo dinamikasi</h3>
+          <span>so'nggi 7 kun, so'm</span>
+        </div>
+        <div class="chart-bars">
+          {% for d in sales_by_day %}
+            <div class="chart-bar-col">
+              <span class="chart-bar-value">{{ d.value|floatformat:0 }}</span>
+              <div class="chart-bar {% if d.peak %}peak{% endif %}" style="height:{{ d.pct }}%;" title="{{ d.label }}: {{ d.value|floatformat:0 }} so'm"></div>
+              <span class="chart-bar-label">{{ d.label }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:32px;align-items:start;">
+        <div class="card">
+          <div class="chart-card-head"><h3>Eng ko'p sotilgan</h3><span>dona bo'yicha</span></div>
+          {% for p in top_products %}
+            <div class="hbar-row">
+              <span class="hbar-label" title="{{ p.product_name }}">{{ p.product_name }}</span>
+              <div class="hbar-track"><div class="hbar-fill" style="width:{{ p.pct }}%;"></div></div>
+              <span class="hbar-value">{{ p.qty }} dona</span>
+            </div>
+          {% empty %}
+            <p style="color:var(--color-smoke);font-size:14px;">Hali sotuv yo'q</p>
+          {% endfor %}
+        </div>
+
+        <div class="card">
+          <div class="chart-card-head"><h3>Kategoriya bo'yicha daromad</h3><span>so'm</span></div>
+          {% for c in by_category %}
+            <div class="hbar-row">
+              <span class="hbar-label" title="{{ c.cat }}">{{ c.cat }}</span>
+              <div class="hbar-track"><div class="hbar-fill" style="width:{{ c.pct }}%;"></div></div>
+              <span class="hbar-value">{{ c.revenue|floatformat:0 }}</span>
+            </div>
+          {% empty %}
+            <p style="color:var(--color-smoke);font-size:14px;">Hali sotuv yo'q</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if low_stock %}
+      <div class="card" style="margin-bottom:32px;">
+        <div class="chart-card-head"><h3>⚠ Zaxirani to'ldirish kerak</h3><span>{{ low_stock_count }} mahsulot</span></div>
+        {% for p in low_stock %}
+          <div class="alert-row">
+            <span>{{ p.name }}</span>
+            <a href="{% url 'admin:catalog_product_change' p.id %}" class="pill pill-ghost pill-sm">Tahrirlash</a>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
 
       <h2 class="heading-sm" style="margin-bottom:16px;">So'nggi buyurtmalar</h2>
       <div class="card" style="margin-bottom:32px;padding:0;overflow:hidden;">

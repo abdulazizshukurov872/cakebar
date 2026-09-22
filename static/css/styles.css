@@ -223,7 +223,31 @@ form ul.errorlist { color: #c0392b; font-size: 13px; list-style: none; padding: 
 .stat-num { font-family: var(--font-cond); font-weight: 700; font-size: 56px; color: var(--color-mint-chip); }
 .stat-label { font-size: 14px; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-smoke); }
 
+/* ---------- ADMIN CHARTS ---------- */
+.chart-card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+.chart-card-head h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; }
+.chart-card-head span { font-size: 12px; color: var(--color-smoke); }
+
+.chart-bars { display: flex; align-items: flex-end; gap: 10px; height: 160px; }
+.chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
+.chart-bar-value { font-family: var(--font-mono); font-size: 10px; color: var(--color-slate); margin-bottom: 4px; white-space: nowrap; }
+.chart-bar { width: 100%; max-width: 28px; background: var(--color-carbon-black); border-radius: 4px 4px 0 0; min-height: 3px; }
+.chart-bar.peak { background: var(--color-mint-chip); }
+.chart-bar-label { font-size: 10px; color: var(--color-smoke); margin-top: 8px; text-transform: uppercase; }
+
+.hbar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.hbar-row:last-child { margin-bottom: 0; }
+.hbar-label { width: 42%; font-size: 13px; font-weight: 500; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hbar-track { flex: 1; background: var(--color-mist-gray); border-radius: 4px; height: 10px; overflow: hidden; }
+.hbar-fill { height: 100%; background: var(--color-carbon-black); border-radius: 4px; }
+.hbar-value { width: 90px; text-align: right; font-family: var(--font-mono); font-size: 12px; flex-shrink: 0; color: var(--color-slate); }
+
+.alert-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-mist-gray); font-size: 14px; }
+.alert-row:last-child { border-bottom: none; }
+.alert-dot { position: absolute; top: 16px; right: 16px; width: 10px; height: 10px; border-radius: 50%; background: var(--color-voltage-yellow); border: 1.5px solid var(--color-carbon-black); }
+
 @media (max-width: 700px) {
   .nav-links { display: none; }
   .display-xl { font-size: 44px; }
+  .hbar-label { width: 90px; }
 }
