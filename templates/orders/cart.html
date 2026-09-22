@@ -8,7 +8,8 @@
       <div class="cart-item">
         <div class="cart-item-img">{% if line.product.image_url %}<img src="{{ line.product.image_url }}" alt="{{ line.product.name }}">{% endif %}</div>
         <div class="cart-item-info">
-          <div style="font-weight:700;text-transform:uppercase;font-size:14px;">{{ line.product.name }}</div>
+          <div style="font-weight:700;text-transform:uppercase;font-size:14px;">{% pfield line.product "name" %}</div>
+          {% if line.product.quantity %}<div class="mono" style="font-size:11px;color:var(--color-smoke);">{% pfield line.product "quantity" %}</div>{% endif %}
           <form method="post" action="{% url 'cart_update' line.product.id %}" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
             {% csrf_token %}
             <button type="submit" name="qty" value="{{ line.qty|add:'-1' }}" class="qty-btn">−</button>

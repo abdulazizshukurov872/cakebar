@@ -137,6 +137,82 @@ NUTRITION = {
     "Rezavorli tort + Smuzi": (260, 3.5, 12.0, 35.0),
 }
 
+# uz nomi -> (miqdor_uz, miqdor_ru, miqdor_en)
+QUANTITY = {
+    "Shokoladli tort": ("1.5 kg (10-12 porsiya)", "1.5 кг (10-12 порций)", "1.5 kg (10-12 servings)"),
+    "Rezavorli tort": ("1.5 kg (10-12 porsiya)", "1.5 кг (10-12 порций)", "1.5 kg (10-12 servings)"),
+    "Nikoh torti": ("5 kg (30-40 porsiya)", "5 кг (30-40 порций)", "5 kg (30-40 servings)"),
+    "Cheesecake": ("1.2 kg (8-10 porsiya)", "1.2 кг (8-10 порций)", "1.2 kg (8-10 servings)"),
+    "Mevali tart": ("300 gr (1 dona)", "300 г (1 шт.)", "300 g (1 pc)"),
+
+    "Napoleon pirojnoye": ("150 gr (1 dona)", "150 г (1 шт.)", "150 g (1 pc)"),
+    "Tiramisu": ("150 gr (1 dona)", "150 г (1 шт.)", "150 g (1 pc)"),
+    "Ezoklair": ("80 gr (1 dona)", "80 г (1 шт.)", "80 g (1 pc)"),
+    "Dolchinli rulet": ("100 gr (1 dona)", "100 г (1 шт.)", "100 g (1 pc)"),
+    "Kruassan": ("70 gr (1 dona)", "70 г (1 шт.)", "70 g (1 pc)"),
+    "Belgiya vaflisi": ("150 gr (1 dona)", "150 г (1 шт.)", "150 g (1 pc)"),
+    "Cannoli": ("90 gr (1 dona)", "90 г (1 шт.)", "90 g (1 pc)"),
+
+    "Klassik donut": ("70 gr (1 dona)", "70 г (1 шт.)", "70 g (1 pc)"),
+    "Shokoladli donut": ("75 gr (1 dona)", "75 г (1 шт.)", "75 g (1 pc)"),
+    "Pushti glazurli donut": ("75 gr (1 dona)", "75 г (1 шт.)", "75 g (1 pc)"),
+
+    "Choco-chip pechenye": ("300 gr (12 dona)", "300 г (12 шт.)", "300 g (12 pcs)"),
+    "Oatmeal pechenye": ("280 gr (10 dona)", "280 г (10 шт.)", "280 g (10 pcs)"),
+    "Assorti pechenye to'plami": ("350 gr (15 dona)", "350 г (15 шт.)", "350 g (15 pcs)"),
+
+    "Qora shokolad 70%": ("100 gr", "100 г", "100 g"),
+    "Sut shokoladi yong'oqli": ("100 gr", "100 г", "100 g"),
+    "Shokolad konfet to'plami": ("300 gr", "300 г", "300 g"),
+    "Shokoladli brauni": ("120 gr (1 dona)", "120 г (1 шт.)", "120 g (1 pc)"),
+    "Praline to'plami": ("200 gr", "200 г", "200 g"),
+
+    "Jele konfetlar": ("300 gr", "300 г", "300 g"),
+    "Karamel konfet": ("250 gr", "250 г", "250 g"),
+    "Marmelad konfetlar": ("250 gr", "250 г", "250 g"),
+
+    "Rangli makaron to'plami": ("12 dona (~180 gr)", "12 шт. (~180 г)", "12 pcs (~180 g)"),
+    "Vanil makaron": ("6 dona (~90 gr)", "6 шт. (~90 г)", "6 pcs (~90 g)"),
+    "Shokoladli makaron": ("6 dona (~90 gr)", "6 шт. (~90 г)", "6 pcs (~90 g)"),
+
+    "Vanil muzqaymoq": ("500 ml", "500 мл", "500 ml"),
+    "Shokoladli muzqaymoq": ("500 ml", "500 мл", "500 ml"),
+    "Rezavorli sorbet": ("500 ml", "500 мл", "500 ml"),
+
+    "Halva": ("400 gr", "400 г", "400 g"),
+    "Parvarda": ("300 gr", "300 г", "300 g"),
+    "Chak-chak": ("400 gr", "400 г", "400 g"),
+    "Baklava": ("350 gr", "350 г", "350 g"),
+
+    "Vanil keksi": ("180 gr (6 dona)", "180 г (6 шт.)", "180 g (6 pcs)"),
+    "Shokoladli muffin": ("300 gr (6 dona)", "300 г (6 шт.)", "300 g (6 pcs)"),
+    "Limonli keks": ("400 gr (1 dona)", "400 г (1 шт.)", "400 g (1 pc)"),
+    "Red Velvet keks": ("200 gr (4 dona)", "200 г (4 шт.)", "200 g (4 pcs)"),
+
+    "Apelsin sharbati": ("500 ml", "500 мл", "500 ml"),
+    "Qulupnay smuzi": ("400 ml", "400 мл", "400 ml"),
+    "Limonad": ("500 ml", "500 мл", "500 ml"),
+    "Shokoladli milkshake": ("450 ml", "450 мл", "450 ml"),
+    "Issiq shokolad": ("300 ml", "300 мл", "300 ml"),
+
+    "Espresso": ("30 ml", "30 мл", "30 ml"),
+    "Kapuchino": ("200 ml", "200 мл", "200 ml"),
+    "Latte": ("250 ml", "250 мл", "250 ml"),
+    "Amerikano": ("220 ml", "220 мл", "220 ml"),
+    "Muzli latte": ("300 ml", "300 мл", "300 ml"),
+
+    "Napoleon + Espresso": ("1 dona + 30 ml", "1 шт. + 30 мл", "1 pc + 30 ml"),
+    "Tiramisu + Kapuchino": ("1 dona + 200 ml", "1 шт. + 200 мл", "1 pc + 200 ml"),
+    "Shokoladli tort + Latte": ("1 bo'lak + 250 ml", "1 кусок + 250 мл", "1 slice + 250 ml"),
+    "2 ta Donut + Amerikano": ("2 dona + 220 ml", "2 шт. + 220 мл", "2 pcs + 220 ml"),
+    "Makaron seti + Espresso": ("6 dona + 30 ml", "6 шт. + 30 мл", "6 pcs + 30 ml"),
+    "Ezoklair + Kapuchino": ("1 dona + 200 ml", "1 шт. + 200 мл", "1 pc + 200 ml"),
+    "Shokoladli muffin + Limonad": ("1 dona + 500 ml", "1 шт. + 500 мл", "1 pc + 500 ml"),
+    "Chak-chak + Qora kofe": ("200 gr + 220 ml", "200 г + 220 мл", "200 g + 220 ml"),
+    "Pechenye to'plami + Milkshake": ("200 gr + 450 ml", "200 г + 450 мл", "200 g + 450 ml"),
+    "Rezavorli tort + Smuzi": ("1 bo'lak + 400 ml", "1 кусок + 400 мл", "1 slice + 400 ml"),
+}
+
 # key -> (name_uz, name_ru, name_en)
 CATEGORIES = [
     ("tort", "Tortlar", "Торты", "Cakes"),
@@ -435,10 +511,12 @@ class Command(BaseCommand):
             name_ru, desc_ru, comp_ru = ru
             name_en, desc_en, comp_en = en
             calories, protein_g, fat_g, carbs_g = NUTRITION.get(name, (None, None, None, None))
+            qty, qty_ru, qty_en = QUANTITY.get(name, ("", "", ""))
             Product.objects.create(
                 name=name, description=desc, composition=comp,
                 name_ru=name_ru, description_ru=desc_ru, composition_ru=comp_ru,
                 name_en=name_en, description_en=desc_en, composition_en=comp_en,
+                quantity=qty, quantity_ru=qty_ru, quantity_en=qty_en,
                 category=cats[cat_key], price=price, discount_price=discount,
                 in_stock=in_stock, stock_quantity=0 if not in_stock else 25,
                 rating=rating, image_url=image_url,

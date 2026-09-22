@@ -6,6 +6,7 @@
   <div class="product-body">
     <span class="product-cat">{% pfield p.category "name" %}</span>
     <a href="{% url 'product_detail' p.id %}" class="product-name">{% pfield p "name" %}</a>
+    {% if p.quantity %}<span class="mono" style="font-size:12px;color:var(--color-smoke);">{% pfield p "quantity" %}</span>{% endif %}
     <span style="font-size:13px;color:var(--color-smoke);">★ {{ p.rating }} {% if not p.in_stock %}<span class="tag dark" style="margin-left:6px;">{% t "out_of_stock" %}</span>{% endif %}</span>
     <div class="product-price-row">
       <span>

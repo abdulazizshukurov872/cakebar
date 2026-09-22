@@ -10,6 +10,7 @@
     <div>
       <span class="tag" style="margin-bottom:16px;display:inline-block;">{% pfield p.category "name" %}</span>
       <h1 class="heading" style="margin-bottom:8px;">{% pfield p "name" %}</h1>
+      {% if p.quantity %}<p class="mono" style="color:var(--color-slate);font-size:14px;margin-bottom:8px;">{% pfield p "quantity" %}</p>{% endif %}
       <p style="color:var(--color-smoke);margin-bottom:16px;">
         ★ {% if avg_rating %}{{ avg_rating|floatformat:1 }} ({{ reviews.count }} sharh){% else %}{{ p.rating }} — hali sharh yo'q{% endif %}
         {% if not p.in_stock %}· <span class="tag dark">Tugagan</span>{% elif p.stock_quantity <= 5 %}· <span class="tag yellow">Faqat {{ p.stock_quantity }} dona qoldi</span>{% endif %}
