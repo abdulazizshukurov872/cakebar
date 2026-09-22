@@ -7,6 +7,7 @@ class User(AbstractUser):
     address = models.CharField("Manzil", max_length=255, blank=True)
     balance = models.DecimalField("Wallet balansi", max_digits=12, decimal_places=0, default=0)
     loyalty_points = models.PositiveIntegerField("Loyallik ballari", default=0)
+    recovery_code_hash = models.CharField("Tiklash kodi (hash)", max_length=128, blank=True)
 
     def __str__(self):
         return self.get_full_name() or self.username

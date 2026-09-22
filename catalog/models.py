@@ -41,6 +41,10 @@ class Product(models.Model):
     in_stock = models.BooleanField("Mavjud", default=True)
     stock_quantity = models.PositiveIntegerField("Zaxira miqdori", default=20)
     rating = models.DecimalField("Reyting", max_digits=2, decimal_places=1, default=4.5)
+    calories = models.PositiveIntegerField("Kaloriya (kkal, 100gr)", null=True, blank=True)
+    protein_g = models.DecimalField("Oqsil (gr, 100gr)", max_digits=5, decimal_places=1, null=True, blank=True)
+    fat_g = models.DecimalField("Yog' (gr, 100gr)", max_digits=5, decimal_places=1, null=True, blank=True)
+    carbs_g = models.DecimalField("Uglevod (gr, 100gr)", max_digits=5, decimal_places=1, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -63,6 +67,17 @@ class Product(models.Model):
     @property
     def current_price(self):
         return self.discount_price or self.price
+
+    @property
+    def calorie_level(self):
+        """Rough guide: under 150 kcal/100g = light, 150-300 = medium, 300+ = high."""
+        if self.calories is None:
+            return None
+        if self.calories < 150:
+            return "past"
+        if self.calories < 300:
+            return "orta"
+        return "yuqori"
 
     def localized(self, field, lang):
         if lang == "uz":

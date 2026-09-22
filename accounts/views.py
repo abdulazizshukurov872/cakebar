@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
-from .forms import AddressForm, ProfileForm, SignUpForm
+from .forms import AddressForm, PasswordResetForm, ProfileForm, SignUpForm
 from .models import Address, User
 
 
@@ -14,11 +14,22 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f"Xush kelibsiz, {user.username}!")
-            return redirect("dashboard")
+            return render(request, "accounts/signup_success.html", {"recovery_code": user.plain_recovery_code})
     else:
         form = SignUpForm()
     return render(request, "accounts/signup.html", {"form": form})
+
+
+def password_reset(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Parol muvaffaqiyatli yangilandi. Endi kirishingiz mumkin.")
+            return redirect("login")
+    else:
+        form = PasswordResetForm()
+    return render(request, "accounts/password_reset.html", {"form": form})
 
 
 @login_required

@@ -44,7 +44,25 @@
 
       {% if p.composition %}
         <h3 class="heading-sm" style="margin-bottom:8px;">Tarkibi</h3>
-        <p style="color:var(--color-slate);">{% pfield p "composition" %}</p>
+        <p style="color:var(--color-slate);margin-bottom:24px;">{% pfield p "composition" %}</p>
+      {% endif %}
+
+      {% if p.calories %}
+        <h3 class="heading-sm" style="margin-bottom:8px;">{% t "nutrition_title" %}</h3>
+        <p style="font-size:12px;color:var(--color-smoke);margin-bottom:10px;">{% t "per_100g" %}</p>
+        <div class="tag-row" style="margin-bottom:10px;">
+          <span class="tag">{% t "calories_label" %}: <b>{{ p.calories }}</b> kcal</span>
+          <span class="tag">{% t "protein_label" %}: <b>{{ p.protein_g }}</b> g</span>
+          <span class="tag">{% t "fat_label" %}: <b>{{ p.fat_g }}</b> g</span>
+          <span class="tag">{% t "carbs_label" %}: <b>{{ p.carbs_g }}</b> g</span>
+        </div>
+        {% if p.calorie_level == "past" %}
+          <span class="tag mint">{% level_t p.calorie_level %}</span>
+        {% elif p.calorie_level == "yuqori" %}
+          <span class="tag yellow">{% level_t p.calorie_level %}</span>
+        {% else %}
+          <span class="tag">{% level_t p.calorie_level %}</span>
+        {% endif %}
       {% endif %}
     </div>
   </div>

@@ -28,5 +28,10 @@ def reason_t(context, reason_code):
 
 
 @register.simple_tag(takes_context=True)
+def level_t(context, level_code):
+    return get_text(_current_lang(context), f"level_{level_code}")
+
+
+@register.simple_tag(takes_context=True)
 def pfield(context, obj, field):
     return obj.localized(field, _current_lang(context))

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section narrow">
+  <h1 class="heading" style="margin-bottom:24px;">Ro'yxatdan muvaffaqiyatli o'tdingiz!</h1>
+  <div class="card-dark" style="margin-bottom:24px;">
+    <p style="margin-bottom:12px;color:var(--color-mint-chip);font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:0.04em;">⚠ Muhim — bu kodni saqlab qo'ying</p>
+    <p style="margin-bottom:16px;color:var(--color-ash);">Agar parolingizni unutsangiz, faqat shu kod orqali tiklay olasiz. Ekran suratini oling yoki yozib qo'ying — keyin qayta ko'rsatilmaydi.</p>
+    <div class="mono" style="font-size:32px;font-weight:700;letter-spacing:0.1em;color:var(--color-paper-white);background:rgba(255,255,255,0.08);border-radius:12px;padding:16px;text-align:center;">{{ recovery_code }}</div>
+  </div>
+  <a href="{% url 'dashboard' %}" class="pill pill-dark full">Kodni saqladim, davom etish</a>
+</div>
+{% endblock %}
