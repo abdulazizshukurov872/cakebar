@@ -317,7 +317,7 @@ PRODUCTS = [
      ("Jele konfetlar", "Meva ta'mi, 300gr", "Shakar, glyukoza siropi, jelatin, meva sharbati kontsentrati, limon kislotasi"),
      ("Желейные конфеты", "Фруктовый вкус, 300г", "Сахар, глюкозный сироп, желатин, концентрат фруктового сока, лимонная кислота"),
      ("Jelly Candy", "Fruit flavor, 300g", "Sugar, glucose syrup, gelatin, fruit juice concentrate, citric acid")),
-    ("konfet", 22000, None, False, 4.2, I_,
+    ("konfet", 22000, None, True, 4.2, I_,
      ("Karamel konfet", "Yumshoq karamel, 250gr", "Shakar, glyukoza siropi, sariyog', qaymoq, vanil"),
      ("Карамельные конфеты", "Мягкая карамель, 250г", "Сахар, глюкозный сироп, сливочное масло, сливки, ваниль"),
      ("Caramel Candy", "Soft caramel, 250g", "Sugar, glucose syrup, butter, cream, vanilla")),
