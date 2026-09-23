@@ -6,9 +6,9 @@ from .models import Address, User
 
 @admin.register(User)
 class CakeBarUserAdmin(UserAdmin):
-    list_display = ("username", "email", "phone", "balance", "loyalty_points", "is_superuser")
+    list_display = ("username", "email", "phone", "phone_verified", "balance", "loyalty_points", "is_superuser")
     fieldsets = UserAdmin.fieldsets + (
-        ("CakeBar ma'lumotlari", {"fields": ("phone", "address", "balance", "loyalty_points")}),
+        ("CakeBar ma'lumotlari", {"fields": ("phone", "phone_verified", "address", "balance", "loyalty_points")}),
     )
 
 

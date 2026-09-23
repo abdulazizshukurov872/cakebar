@@ -1,5 +1,8 @@
 {% extends "dashboard/account_layout.html" %}
 {% load i18n_extra %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
 {% block account_content %}
 <h1 class="heading" style="margin-bottom:24px;">{% t "profile" %}</h1>
 <div class="card" style="margin-bottom:24px;">
@@ -40,8 +43,68 @@
     {% csrf_token %}
     <div class="form-row">{{ address_form.label.label_tag }}{{ address_form.label }}</div>
     <div class="form-row">{{ address_form.address_line.label_tag }}{{ address_form.address_line }}</div>
+    <div class="form-row">
+      <label>Xaritadan belgilash (ixtiyoriy) — bosib joy tanlang</label>
+      <div id="address-map" style="height:220px;width:100%;border-radius:16px;margin-top:6px;background:#e8e5df;"></div>
+      <div id="address-map-status" style="font-size:12px;color:var(--color-smoke);margin-top:4px;"></div>
+      {{ address_form.latitude }}{{ address_form.longitude }}
+    </div>
     <div class="form-row" style="display:flex;align-items:center;gap:8px;">{{ address_form.is_default }}{{ address_form.is_default.label_tag }}</div>
     <button type="submit" class="pill pill-ghost">+ Manzil qo'shish</button>
   </form>
 </div>
+
+<div class="card" style="margin-top:24px;">
+  <h2 class="heading-sm" style="margin-bottom:16px;">Do'stlarni taklif qiling</h2>
+  <p style="font-size:14px;color:var(--color-slate);margin-bottom:8px;">Sizning referral havolangiz — do'stingiz shu havola orqali ro'yxatdan o'tsa va birinchi buyurtmasi yetkazilsa, ikkovingizga ham bonus ball beriladi.</p>
+  <p class="mono" style="font-size:13px;word-break:break-all;background:var(--color-cream,#f6f3ee);padding:10px 14px;border-radius:10px;">{{ request.scheme }}://{{ request.get_host }}{% url 'signup' %}?ref={{ user.referral_code }}</p>
+</div>
+
+<div class="card" style="margin-top:24px;">
+  <h2 class="heading-sm" style="margin-bottom:16px;">Telegram bildirishnomalari</h2>
+  {% if user.telegram_chat_id %}
+    <p style="color:#0a6b0a;font-size:14px;">✓ Telegram ulangan — buyurtma holati o'zgarganda sizga xabar boradi.</p>
+  {% else %}
+    <p style="font-size:14px;color:var(--color-slate);">Ulash uchun botga o'ting va quyidagi kodni yuboring:</p>
+    <p class="mono" style="font-size:18px;font-weight:700;margin-top:6px;">/start {{ user.telegram_link_code }}</p>
+  {% endif %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+window.addEventListener("load", function() {
+  var mapEl = document.getElementById("address-map");
+  var statusEl = document.getElementById("address-map-status");
+  if (!mapEl) { return; }
+  if (typeof L === "undefined") {
+    if (statusEl) { statusEl.textContent = "Xarita yuklanmadi (internet aloqasini tekshiring)."; }
+    return;
+  }
+  var latInput = document.getElementById("id_latitude");
+  var lngInput = document.getElementById("id_longitude");
+  var map = L.map("address-map").setView([41.311081, 69.240562], 12);
+  var tiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Tiles &copy; Esri"
+  }).addTo(map);
+  var tileErrors = 0;
+  tiles.on("tileerror", function() {
+    tileErrors++;
+    if (tileErrors > 5 && statusEl) {
+      statusEl.style.color = "#b00020";
+      statusEl.style.fontWeight = "700";
+      statusEl.textContent = "Xarita plitkalari yuklanmadi — tarmoq/provayder cheklovi bo'lishi mumkin.";
+    }
+  });
+  setTimeout(function() { map.invalidateSize(); }, 200);
+  var marker = null;
+  map.on("click", function(e) {
+    if (marker) { map.removeLayer(marker); }
+    marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+    latInput.value = e.latlng.lat.toFixed(6);
+    lngInput.value = e.latlng.lng.toFixed(6);
+    if (statusEl) { statusEl.textContent = "Tanlandi: " + e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5); }
+  });
+});
+</script>
 {% endblock %}

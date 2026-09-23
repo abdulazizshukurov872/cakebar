@@ -1,13 +1,37 @@
+import secrets
+import string
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+def generate_referral_code():
+    alphabet = string.ascii_uppercase + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(8))
+
+
+def generate_telegram_link_code():
+    alphabet = string.ascii_uppercase + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(8))
+
+
 class User(AbstractUser):
     phone = models.CharField("Telefon", max_length=32, blank=True)
+    phone_verified = models.BooleanField("Telefon SMS orqali tasdiqlangan", default=False)
     address = models.CharField("Manzil", max_length=255, blank=True)
     balance = models.DecimalField("Wallet balansi", max_digits=12, decimal_places=0, default=0)
     loyalty_points = models.PositiveIntegerField("Loyallik ballari", default=0)
     recovery_code_hash = models.CharField("Tiklash kodi (hash)", max_length=128, blank=True)
+
+    referral_code = models.CharField("Referral kodi", max_length=8, unique=True, default=generate_referral_code)
+    referred_by = models.ForeignKey(
+        "self", verbose_name="Kim taklif qilgan", null=True, blank=True,
+        related_name="referrals", on_delete=models.SET_NULL,
+    )
+    referral_bonus_awarded = models.BooleanField("Referral bonusi berildi", default=False)
+
+    telegram_chat_id = models.CharField("Telegram chat ID", max_length=32, blank=True)
+    telegram_link_code = models.CharField("Telegram ulash kodi", max_length=8, blank=True, default=generate_telegram_link_code)
 
     def __str__(self):
         return self.get_full_name() or self.username
@@ -17,6 +41,8 @@ class Address(models.Model):
     user = models.ForeignKey(User, verbose_name="Foydalanuvchi", related_name="addresses", on_delete=models.CASCADE)
     label = models.CharField("Nomi", max_length=50, help_text="Masalan: Uy, Ish")
     address_line = models.CharField("Manzil", max_length=255)
+    latitude = models.DecimalField("Kenglik", max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField("Uzunlik", max_digits=9, decimal_places=6, null=True, blank=True)
     is_default = models.BooleanField("Asosiy", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
