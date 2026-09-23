@@ -43,6 +43,14 @@ if DEBUG:
 
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get("CAKEBAR_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
 
+if IS_HOSTED:
+    # Railway/Render/Heroku terminate TLS at their edge and forward plain
+    # HTTP with this header. Without it, request.is_secure() is always
+    # False behind the proxy, and SECURE_SSL_REDIRECT below causes an
+    # infinite redirect loop (every request looks insecure, so Django keeps
+    # redirecting to the https:// URL it's already on).
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 if not DEBUG:
     SECURE_SSL_REDIRECT = env_bool("CAKEBAR_SECURE_SSL_REDIRECT", default=True)
     SESSION_COOKIE_SECURE = True

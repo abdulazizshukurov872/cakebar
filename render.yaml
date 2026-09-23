@@ -1,0 +1,46 @@
+databases:
+  - name: cakebar-db
+    plan: free
+    databaseName: cakebar
+    user: cakebar
+
+services:
+  - type: web
+    name: cakebar-web
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    preDeployCommand: "python manage.py migrate --noinput"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: CAKEBAR_SECRET_KEY
+        generateValue: true
+      - key: CAKEBAR_DATABASE_URL
+        fromDatabase:
+          name: cakebar-db
+          property: connectionString
+      - key: CAKEBAR_ALLOWED_HOSTS
+        fromService:
+          type: web
+          name: cakebar-web
+          property: host
+      - key: PYTHON_VERSION
+        value: "3.13.7"
+
+  # Render's free plan does not include background workers. This service is
+  # only used if/when the project is upgraded to a paid plan; until then,
+  # unpaid orders still expire fine via the safety-net call already inside
+  # dashboard.views.admin_dashboard (see orders/services.expire_unpaid_orders).
+  - type: worker
+    name: cakebar-worker
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python manage.py expire_unpaid_orders --loop"
+    envVars:
+      - key: CAKEBAR_SECRET_KEY
+        generateValue: true
+      - key: CAKEBAR_DATABASE_URL
+        fromDatabase:
+          name: cakebar-db
+          property: connectionString
