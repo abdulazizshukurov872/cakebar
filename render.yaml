@@ -9,7 +9,7 @@ services:
     name: cakebar-web
     runtime: python
     plan: free
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py seed"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: CAKEBAR_SECRET_KEY
@@ -18,11 +18,14 @@ services:
         fromDatabase:
           name: cakebar-db
           property: connectionString
+      # NOTE: fromService/property:host resolves to the internal service name
+      # ("cakebar-web"), not the public *.onrender.com domain — using it here
+      # broke ALLOWED_HOSTS with every Blueprint sync (silent 400s, DisallowedHost).
+      # Hardcode the actual public hostname instead.
       - key: CAKEBAR_ALLOWED_HOSTS
-        fromService:
-          type: web
-          name: cakebar-web
-          property: host
+        value: "cakebar-web.onrender.com"
+      - key: CAKEBAR_CSRF_TRUSTED_ORIGINS
+        value: "https://cakebar-web.onrender.com"
       - key: PYTHON_VERSION
         value: "3.13.7"
 
