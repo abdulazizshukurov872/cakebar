@@ -203,6 +203,12 @@ EMAIL_HOST_PASSWORD = os.environ.get("CAKEBAR_EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = env_bool("CAKEBAR_EMAIL_USE_TLS", default=True)
 DEFAULT_FROM_EMAIL = os.environ.get("CAKEBAR_DEFAULT_FROM_EMAIL", "CakeBar <no-reply@cakebar.uz>")
 
+# Ops-only: see accounts.management.commands.bootstrap_admin. Never set these
+# permanently — add them on the host to create/reset one superadmin, run the
+# command once, then remove them again.
+BOOTSTRAP_ADMIN_PHONE = os.environ.get("CAKEBAR_BOOTSTRAP_PHONE", "")
+BOOTSTRAP_ADMIN_PASSWORD = os.environ.get("CAKEBAR_BOOTSTRAP_PASSWORD", "")
+
 # SMS — Eskiz.uz style provider. Leave empty to skip real sending (in-app
 # notifications still work without this).
 ESKIZ_EMAIL = os.environ.get("ESKIZ_EMAIL", "")
