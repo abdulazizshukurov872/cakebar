@@ -34,6 +34,8 @@ TRANSLATIONS = {
         "shop_now": "Xarid qilish", "new_collection": "Yangi kolleksiya", "delivered_today": "Bugun yetkaziladi",
         "satisfied_customers": "Mamnun mijozlar", "refund_hours_label": "Soat qaytarish muddati",
         "quantity": "Miqdor", "remove": "o'chirish", "overview": "Umumiy",
+        "sort_by": "Saralash", "sort_newest": "Yangilari", "sort_price_asc": "Arzon narx",
+        "sort_price_desc": "Qimmat narx", "sort_rating": "Reyting bo'yicha",
     },
     "ru": {
         "home": "Главная", "products": "Товары", "my_orders": "Мои заказы",
@@ -70,6 +72,8 @@ TRANSLATIONS = {
         "shop_now": "Начать покупки", "new_collection": "Новая коллекция", "delivered_today": "Доставка сегодня",
         "satisfied_customers": "Довольных клиентов", "refund_hours_label": "Часов на возврат",
         "quantity": "Количество", "remove": "удалить", "overview": "Обзор",
+        "sort_by": "Сортировка", "sort_newest": "Новинки", "sort_price_asc": "Сначала дешевле",
+        "sort_price_desc": "Сначала дороже", "sort_rating": "По рейтингу",
     },
     "en": {
         "home": "Home", "products": "Products", "my_orders": "My Orders",
@@ -106,6 +110,8 @@ TRANSLATIONS = {
         "shop_now": "Shop now", "new_collection": "New collection", "delivered_today": "Delivered today",
         "satisfied_customers": "Happy customers", "refund_hours_label": "Hour refund window",
         "quantity": "Quantity", "remove": "remove", "overview": "Overview",
+        "sort_by": "Sort by", "sort_newest": "Newest", "sort_price_asc": "Price: low to high",
+        "sort_price_desc": "Price: high to low", "sort_rating": "Top rated",
     },
 }
 

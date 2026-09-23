@@ -45,8 +45,10 @@ def price_summary(subtotal):
     }
 
 
-def place_order(user, cart, data):
+def place_order(user, cart, data, lang="uz"):
     """Create the order from the cart. `data` is CheckoutForm.cleaned_data.
+    `lang` is the customer's current UI language ("uz"/"ru"/"en") and is used
+    to snapshot the product name in that language onto the order item.
     Raises CheckoutError with a user-facing message when something is off."""
     lines = list(cart)
     if not lines:
@@ -117,7 +119,7 @@ def place_order(user, cart, data):
             OrderItem(
                 order=order,
                 product=line["product"],
-                product_name=line["product"].name,
+                product_name=line["product"].localized("name", lang),
                 image_url=line["product"].image_url,
                 price=line["price"],
                 quantity=line["qty"],

@@ -28,16 +28,28 @@ def home(request):
     return render(request, "catalog/home.html", {"categories": categories, "featured": featured, "favorite_ids": favorite_ids})
 
 
+SORT_OPTIONS = {
+    "newest": "-created_at",
+    "price_asc": "price",
+    "price_desc": "-price",
+    "rating": "-rating",
+}
+
+
 def product_list(request):
     products = Product.objects.select_related("category").all()
     category_id = request.GET.get("category")
     q = request.GET.get("q", "").strip()
+    sort = request.GET.get("sort", "newest")
+    if sort not in SORT_OPTIONS:
+        sort = "newest"
     if category_id:
         products = products.filter(category_id=category_id)
     if q:
         products = products.filter(
             Q(name__icontains=q) | Q(name_ru__icontains=q) | Q(name_en__icontains=q)
         )
+    products = products.order_by(SORT_OPTIONS[sort])
     categories = Category.objects.all()
     favorite_ids = set()
     if request.user.is_authenticated:
@@ -45,6 +57,7 @@ def product_list(request):
     page = Paginator(products, PRODUCTS_PER_PAGE).get_page(request.GET.get("page"))
     query_params = request.GET.copy()
     query_params.pop("page", None)
+    query_params.pop("sort", None)
     return render(request, "catalog/product_list.html", {
         "products": page.object_list,
         "page": page,
@@ -52,6 +65,7 @@ def product_list(request):
         "categories": categories,
         "selected_category": category_id,
         "query": q,
+        "sort": sort,
         "favorite_ids": favorite_ids,
     })
 

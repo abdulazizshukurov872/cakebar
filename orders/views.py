@@ -80,7 +80,7 @@ def checkout(request):
         form = CheckoutForm(request.POST)
         if form.is_valid():
             try:
-                order = place_order(request.user, cart, form.cleaned_data)
+                order = place_order(request.user, cart, form.cleaned_data, lang=request.session.get("lang", "uz"))
             except CheckoutError as exc:
                 messages.error(request, str(exc))
             else:
