@@ -9,8 +9,7 @@ services:
     name: cakebar-web
     runtime: python
     plan: free
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: CAKEBAR_SECRET_KEY
@@ -27,20 +26,8 @@ services:
       - key: PYTHON_VERSION
         value: "3.13.7"
 
-  # Render's free plan does not include background workers. This service is
-  # only used if/when the project is upgraded to a paid plan; until then,
-  # unpaid orders still expire fine via the safety-net call already inside
-  # dashboard.views.admin_dashboard (see orders/services.expire_unpaid_orders).
-  - type: worker
-    name: cakebar-worker
-    runtime: python
-    plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python manage.py expire_unpaid_orders --loop"
-    envVars:
-      - key: CAKEBAR_SECRET_KEY
-        generateValue: true
-      - key: CAKEBAR_DATABASE_URL
-        fromDatabase:
-          name: cakebar-db
-          property: connectionString
+# No worker service here: Render's free plan doesn't run background workers.
+# Unpaid orders still expire fine without it — dashboard.views.admin_dashboard
+# already calls orders.services.expire_unpaid_orders() as a safety net on
+# every admin-panel load. Add a `type: worker` service later if/when this
+# project moves to a paid Render plan and you want the dedicated loop back.
