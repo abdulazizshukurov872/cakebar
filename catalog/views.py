@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -11,6 +13,8 @@ from reviews.forms import ReviewForm
 from reviews.models import Review
 
 from .models import Category, Favorite, Product
+
+PRODUCTS_PER_PAGE = 24
 
 
 def home(request):
@@ -38,8 +42,13 @@ def product_list(request):
     favorite_ids = set()
     if request.user.is_authenticated:
         favorite_ids = set(Favorite.objects.filter(user=request.user).values_list("product_id", flat=True))
+    page = Paginator(products, PRODUCTS_PER_PAGE).get_page(request.GET.get("page"))
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
     return render(request, "catalog/product_list.html", {
-        "products": products,
+        "products": page.object_list,
+        "page": page,
+        "page_query": query_params.urlencode(),
         "categories": categories,
         "selected_category": category_id,
         "query": q,
@@ -69,6 +78,7 @@ def product_detail(request, product_id):
         "p": product, "is_favorite": product.id in favorite_ids, "related": related, "favorite_ids": favorite_ids,
         "reviews": product_reviews, "avg_rating": avg_rating, "can_review": can_review,
         "my_review": my_review, "review_form": ReviewForm(instance=my_review),
+        "inscription_fee": settings.INSCRIPTION_FEE,
     })
 
 

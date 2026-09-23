@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models
 
@@ -38,9 +40,19 @@ class Product(models.Model):
     quantity_ru = models.CharField("Miqdori/og'irligi (ru)", max_length=50, blank=True)
     quantity_en = models.CharField("Miqdori/og'irligi (en)", max_length=50, blank=True)
     image_url = models.URLField("Rasm manzili (URL)", max_length=500, blank=True)
+    image = models.ImageField("Rasm (yuklash)", upload_to="products/", blank=True, null=True,
+                               help_text="Kompyuterdan rasm yuklang. Bo'sh qoldirilsa, yuqoridagi URL ishlatiladi.")
     category = models.ForeignKey(Category, verbose_name="Kategoriya", related_name="products", on_delete=models.CASCADE)
     price = models.DecimalField("Narx", max_digits=12, decimal_places=0)
     discount_price = models.DecimalField("Chegirma narx", max_digits=12, decimal_places=0, null=True, blank=True)
+    sold_by_weight = models.BooleanField(
+        "Og'irlik bo'yicha sotiladi", default=False,
+        help_text="Belgilansa, narx 1 kg uchun hisoblanadi va mijoz og'irlikni (1–3 kg) o'zi tanlaydi.",
+    )
+    allows_inscription = models.BooleanField(
+        "Yozuv yozish mumkin", default=False,
+        help_text="Mijoz tort ustiga yoziladigan matnni kiritishi mumkin.",
+    )
     in_stock = models.BooleanField("Mavjud", default=True)
     stock_quantity = models.PositiveIntegerField("Zaxira miqdori", default=20)
     rating = models.DecimalField("Reyting", max_digits=2, decimal_places=1, default=4.5)
@@ -67,9 +79,23 @@ class Product(models.Model):
         self.in_stock = self.stock_quantity > 0
         self.save(update_fields=["stock_quantity", "in_stock"])
 
+    WEIGHT_OPTIONS = ["1", "1.5", "2", "2.5", "3"]
+
     @property
     def current_price(self):
         return self.discount_price or self.price
+
+    def unit_price(self, weight_kg=None):
+        """Price of one cart unit: per-kg products are multiplied by the chosen weight."""
+        if self.sold_by_weight and weight_kg:
+            return (self.current_price * Decimal(str(weight_kg))).quantize(Decimal("1"))
+        return self.current_price
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url
 
     @property
     def calorie_level(self):

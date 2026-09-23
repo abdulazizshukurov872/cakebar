@@ -24,12 +24,27 @@
       <p style="font-size:13px;color:var(--color-slate);line-height:1.5;">Yetkazilgandan so'ng 72 soat ichida pulingizni qaytarib olishingiz mumkin.</p>
     </aside>
 
-    <div class="grid-3">
-      {% for p in products %}
-        {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
-      {% empty %}
-        <div class="empty-state" style="grid-column:1/-1;">"{{ query }}" bo'yicha mahsulot topilmadi</div>
-      {% endfor %}
+    <div>
+      <div class="grid-3">
+        {% for p in products %}
+          {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
+        {% empty %}
+          <div class="empty-state" style="grid-column:1/-1;">"{{ query }}" bo'yicha mahsulot topilmadi</div>
+        {% endfor %}
+      </div>
+      {% if page.has_other_pages %}
+        <nav style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:32px;flex-wrap:wrap;" aria-label="Sahifalar">
+          {% if page.has_previous %}<a class="pill pill-ghost pill-sm" href="?{% if page_query %}{{ page_query }}&{% endif %}page={{ page.previous_page_number }}">← Oldingi</a>{% endif %}
+          {% for n in page.paginator.page_range %}
+            {% if n == page.number %}
+              <span class="pill pill-dark pill-sm">{{ n }}</span>
+            {% else %}
+              <a class="pill pill-ghost pill-sm" href="?{% if page_query %}{{ page_query }}&{% endif %}page={{ n }}">{{ n }}</a>
+            {% endif %}
+          {% endfor %}
+          {% if page.has_next %}<a class="pill pill-ghost pill-sm" href="?{% if page_query %}{{ page_query }}&{% endif %}page={{ page.next_page_number }}">Keyingi →</a>{% endif %}
+        </nav>
+      {% endif %}
     </div>
   </div>
 </div>

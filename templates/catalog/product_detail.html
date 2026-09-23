@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% load i18n_extra %}
 {% block title %}{{ p.name }} — CakeBar{% endblock %}
+{% block meta_description %}{{ p.description|default:p.name|truncatechars:160 }}{% endblock %}
+{% block og_title %}{{ p.name }} — CakeBar{% endblock %}
+{% block og_description %}{{ p.description|default:p.name|truncatechars:160 }}{% endblock %}
 {% block content %}
 <div class="section">
   <div class="grid-2" style="align-items:start;">
     <div class="product-img" style="height:420px;border-radius:32px;">
-      {% if p.image_url %}<img src="{{ p.image_url }}" alt="{% pfield p 'name' %}">{% endif %}
+      {% if p.display_image %}<img src="{{ p.display_image }}" alt="{% pfield p 'name' %}">{% endif %}
     </div>
     <div>
       <span class="tag" style="margin-bottom:16px;display:inline-block;">{% pfield p.category "name" %}</span>
@@ -29,13 +32,53 @@
         {% else %}
           <span class="price" style="font-size:28px;">{{ p.price|floatformat:0 }} so'm</span>
         {% endif %}
+        {% if p.sold_by_weight %}<span style="color:var(--color-smoke);"> / 1 kg</span>{% endif %}
       </div>
 
+      {% if p.sold_by_weight or p.allows_inscription %}
+        <form method="post" action="{% url 'cart_add' p.id %}" id="product-options" class="card" style="margin-bottom:16px;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          {% if p.sold_by_weight %}
+            <div class="form-row">
+              <label>Og'irligi</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                {% for w in p.WEIGHT_OPTIONS %}
+                  <label class="pill pill-ghost pill-sm" style="cursor:pointer;">
+                    <input type="radio" name="weight" value="{{ w }}" {% if forloop.first %}checked{% endif %} data-kg="{{ w }}"> {{ w }} kg
+                  </label>
+                {% endfor %}
+              </div>
+              <div style="font-size:13px;color:var(--color-smoke);margin-top:6px;">Narxi: <b class="mono" id="weight-price">{{ p.current_price|floatformat:0 }}</b> so'm</div>
+            </div>
+          {% endif %}
+          {% if p.allows_inscription %}
+            <div class="form-row">
+              <label for="id_inscription">Tort ustiga yozuv (ixtiyoriy)</label>
+              <input type="text" name="inscription" id="id_inscription" class="input" maxlength="60" placeholder="Masalan: Tug'ilgan kuning bilan, Madina!">
+              {% if inscription_fee %}<div style="font-size:12px;color:var(--color-smoke);margin-top:4px;">Yozuv narxi: +{{ inscription_fee }} so'm</div>{% endif %}
+            </div>
+          {% endif %}
+        </form>
+        {% if p.sold_by_weight %}
+        <script>
+        (function () {
+          var perKg = {{ p.current_price|floatformat:0|default:0 }};
+          var out = document.getElementById("weight-price");
+          document.querySelectorAll('#product-options input[name="weight"]').forEach(function (r) {
+            r.addEventListener("change", function () {
+              out.textContent = Math.round(perKg * parseFloat(r.dataset.kg)).toLocaleString("ru-RU");
+            });
+          });
+        })();
+        </script>
+        {% endif %}
+      {% endif %}
       <div style="display:flex;gap:10px;margin-bottom:32px;">
         <form method="post" action="{% url 'cart_add' p.id %}">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.path }}">
-          <button type="submit" class="pill pill-dark" {% if not p.in_stock %}disabled{% endif %}>{% t "add_to_cart_full" %}</button>
+          <button type="submit" class="pill pill-dark" {% if not p.in_stock %}disabled{% endif %}{% if p.sold_by_weight or p.allows_inscription %} form="product-options"{% endif %}>{% t "add_to_cart_full" %}</button>
         </form>
         <form method="post" action="{% url 'favorite_toggle' p.id %}">
           {% csrf_token %}
