@@ -16,20 +16,28 @@
 <div class="section">
   <div class="shop-layout">
     <aside class="shop-sidebar">
-      <h3>{% t "footer_links" %}</h3>
-      <a class="sidebar-link" href="{% url 'home' %}">{% t "home" %}</a>
-      <a class="sidebar-link" href="{% url 'about' %}">{% t "about" %}</a>
-      <a class="sidebar-link" href="{% url 'locations' %}">{% t "locations" %}</a>
-      <a class="sidebar-link" href="{% url 'restomarket' %}">{% t "restomarket" %}</a>
-      <a class="sidebar-link" href="{% url 'production' %}">{% t "production" %}</a>
-      <a class="sidebar-link" href="{% url 'events' %}">{% t "events" %}</a>
-      <a class="sidebar-link" href="{% url 'contacts' %}">{% t "contacts" %}</a>
-      <a class="sidebar-link" href="{% url 'careers' %}">{% t "careers" %}</a>
+      <details class="sidebar-group" data-open-on-desktop>
+        <summary>{% t "footer_links" %}</summary>
+        <div class="sidebar-group-body">
+          <a class="sidebar-link" href="{% url 'home' %}">{% t "home" %}</a>
+          <a class="sidebar-link" href="{% url 'about' %}">{% t "about" %}</a>
+          <a class="sidebar-link" href="{% url 'locations' %}">{% t "locations" %}</a>
+          <a class="sidebar-link" href="{% url 'restomarket' %}">{% t "restomarket" %}</a>
+          <a class="sidebar-link" href="{% url 'production' %}">{% t "production" %}</a>
+          <a class="sidebar-link" href="{% url 'events' %}">{% t "events" %}</a>
+          <a class="sidebar-link" href="{% url 'contacts' %}">{% t "contacts" %}</a>
+          <a class="sidebar-link" href="{% url 'careers' %}">{% t "careers" %}</a>
+        </div>
+      </details>
       <div class="sidebar-divider"></div>
-      <h3>{% t "categories" %}</h3>
-      {% for c in categories %}
-        <a class="sidebar-link" href="{% url 'product_list' %}?category={{ c.id }}">{% pfield c "name" %}</a>
-      {% endfor %}
+      <details class="sidebar-group" data-open-on-desktop>
+        <summary>{% t "categories" %}</summary>
+        <div class="sidebar-group-body">
+          {% for c in categories %}
+            <a class="sidebar-link" href="{% url 'product_list' %}?category={{ c.id }}">{% pfield c "name" %}</a>
+          {% endfor %}
+        </div>
+      </details>
     </aside>
 
     <div>

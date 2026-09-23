@@ -117,6 +117,30 @@ a.tag:hover, .tag.active { background: var(--color-carbon-black); color: var(--c
 .sidebar-link.active { background: var(--color-carbon-black); color: var(--color-paper-white); }
 .sidebar-divider { height: 1px; background: var(--color-ash); margin: 20px 0; }
 
+/* Collapsible sidebar groups (<details>): click the heading to open/close. */
+.sidebar-group > summary {
+  list-style: none; cursor: pointer; user-select: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--color-smoke); padding: 4px 0;
+}
+.sidebar-group > summary::-webkit-details-marker { display: none; }
+.sidebar-group > summary::after {
+  content: ""; width: 8px; height: 8px; flex: none;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(45deg); margin-top: -4px; transition: transform 0.2s ease;
+}
+.sidebar-group[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.sidebar-group > summary:hover { color: var(--color-carbon-black); }
+.sidebar-group > summary:focus-visible { outline: 2px solid var(--color-carbon-black); outline-offset: 4px; border-radius: 4px; }
+.sidebar-group-body { padding-top: 12px; }
+.sidebar-group[open] .sidebar-group-body { animation: sidebar-open 0.2s ease; }
+@keyframes sidebar-open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-group > summary::after { transition: none; }
+  .sidebar-group[open] .sidebar-group-body { animation: none; }
+}
+
 /* ---------- GRID / CARDS ---------- */
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }

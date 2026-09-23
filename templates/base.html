@@ -77,5 +77,11 @@
   </div>
 </footer>
 
+<script>
+// Collapsible sidebar groups start open on wide screens, closed on phones.
+if (window.matchMedia("(min-width: 901px)").matches) {
+  document.querySelectorAll("details[data-open-on-desktop]").forEach(function (d) { d.open = true; });
+}
+</script>
 </body>
 </html>
