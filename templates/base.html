@@ -5,9 +5,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}CakeBar — Shirinliklar do'koni{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}CakeBar — Toshkentda tort, shirinlik va desertlarni onlayn buyurtma qiling. Tez yetkazib berish, naqd/karta to'lov, chegirmalar.{% endblock %}">
+<meta property="og:title" content="{% block og_title %}CakeBar — Shirinliklar do'koni{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Toshkentda tort va shirinliklarni onlayn buyurtma qiling.{% endblock %}">
+<meta property="og:type" content="website">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% block extra_head %}{% endblock %}
 </head>
 <body>
 
