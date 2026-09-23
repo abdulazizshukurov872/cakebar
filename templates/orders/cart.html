@@ -6,17 +6,18 @@
   <div class="card">
     {% for line in cart %}
       <div class="cart-item">
-        <div class="cart-item-img">{% if line.product.image_url %}<img src="{{ line.product.image_url }}" alt="{{ line.product.name }}">{% endif %}</div>
+        <div class="cart-item-img">{% if line.product.display_image %}<img src="{{ line.product.display_image }}" alt="{{ line.product.name }}">{% endif %}</div>
         <div class="cart-item-info">
           <div style="font-weight:700;text-transform:uppercase;font-size:14px;">{% pfield line.product "name" %}</div>
-          {% if line.product.quantity %}<div class="mono" style="font-size:11px;color:var(--color-smoke);">{% pfield line.product "quantity" %}</div>{% endif %}
-          <form method="post" action="{% url 'cart_update' line.product.id %}" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          {% if line.weight %}<div class="mono" style="font-size:11px;color:var(--color-smoke);">{{ line.weight }} kg</div>{% elif line.product.quantity %}<div class="mono" style="font-size:11px;color:var(--color-smoke);">{% pfield line.product "quantity" %}</div>{% endif %}
+          {% if line.inscription %}<div style="font-size:12px;color:var(--color-slate);font-style:italic;">Yozuv: «{{ line.inscription }}»</div>{% endif %}
+          <form method="post" action="{% url 'cart_update' line.key %}" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
             {% csrf_token %}
             <button type="submit" name="qty" value="{{ line.qty|add:'-1' }}" class="qty-btn">−</button>
             <span>{{ line.qty }}</span>
             <button type="submit" name="qty" value="{{ line.qty|add:'1' }}" class="qty-btn">+</button>
           </form>
-          <form method="post" action="{% url 'cart_remove' line.product.id %}" style="margin-top:6px;">
+          <form method="post" action="{% url 'cart_remove' line.key %}" style="margin-top:6px;">
             {% csrf_token %}
             <button type="submit" style="background:none;border:none;color:var(--color-smoke);text-decoration:underline;cursor:pointer;font-size:13px;">{% t "remove" %}</button>
           </form>
@@ -28,11 +29,13 @@
     {% endfor %}
 
     {% if cart|length %}
-      <div class="cart-total">
-        <span>{% t "total" %}:</span>
-        <span class="mono">{{ cart.get_total_price|floatformat:0 }} so'm</span>
-      </div>
-      <a href="{% url 'checkout' %}" class="pill pill-dark full">{% t "place_order" %}</a>
+      {% include "orders/_price_summary.html" %}
+      {% if summary.below_minimum %}
+        <p class="tag yellow" style="display:block;margin-bottom:12px;">Minimal buyurtma — {{ summary.min_order_amount }} so'm. Yana {{ summary.missing_for_minimum|floatformat:0 }} so'mlik mahsulot qo'shing.</p>
+        <a href="{% url 'product_list' %}" class="pill pill-ghost full">Xaridni davom ettirish</a>
+      {% else %}
+        <a href="{% url 'checkout' %}" class="pill pill-dark full">{% t "place_order" %}</a>
+      {% endif %}
     {% endif %}
   </div>
 </div>

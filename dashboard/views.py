@@ -12,6 +12,7 @@ from django.utils import timezone
 from accounts.models import User
 from catalog.models import Favorite, Product
 from orders.models import Order, OrderItem
+from orders.services import expire_unpaid_orders
 from refunds.models import RefundRequest
 
 superadmin_required = user_passes_test(lambda u: u.is_active and u.is_superuser, login_url="login")
@@ -21,11 +22,16 @@ superadmin_required = user_passes_test(lambda u: u.is_active and u.is_superuser,
 def role_redirect(request):
     if request.user.is_superuser:
         return redirect("admin_dashboard")
+    courier = getattr(request.user, "courier_profile", None)
+    if courier and courier.is_active:
+        return redirect("courier_panel")
     return redirect("account_home")
 
 
 @superadmin_required
 def admin_dashboard(request):
+    # Cheap safety net in case the expire_unpaid_orders worker isn't running.
+    expire_unpaid_orders()
     orders = Order.objects.all()
     refunds = RefundRequest.objects.all()
     paid_orders = orders.exclude(status="bekor")

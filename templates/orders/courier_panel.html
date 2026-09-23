@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block title %}Kuryer paneli — CakeBar{% endblock %}
+{% block content %}
+<div class="section narrow">
+  <h1 class="heading" style="margin-bottom:8px;">Kuryer paneli</h1>
+  <p style="color:var(--color-smoke);margin-bottom:24px;">{{ courier.name }} · {{ courier.phone }}</p>
+
+  <h2 style="font-size:18px;margin-bottom:12px;">Faol buyurtmalar ({{ active_orders|length }})</h2>
+  <div class="orders-list">
+    {% for o in active_orders %}
+      <div class="order-card">
+        <div class="order-head">
+          <div>
+            <div class="order-id">№ {{ o.id }}</div>
+            <div style="font-size:13px;color:var(--color-smoke);">
+              {% if o.delivery_date %}{{ o.delivery_date|date:"d.m" }}, {{ o.get_delivery_slot_display }}{% else %}{{ o.estimated_delivery_at|date:"d.m H:i" }}{% endif %}
+            </div>
+          </div>
+          <span class="status-badge status-{{ o.status }}">{% status_t o.status %}</span>
+        </div>
+        <div style="margin:8px 0;font-size:14px;">
+          <b>{{ o.user.get_full_name|default:o.user.username }}</b>
+          {% if o.user.phone %} · <a href="tel:{{ o.user.phone }}" style="text-decoration:underline;">{{ o.user.phone }}</a>{% endif %}
+        </div>
+        <div style="font-size:14px;margin-bottom:8px;">
+          📍 {{ o.address }}
+          {% if o.latitude and o.longitude %}
+            · <a href="https://yandex.uz/maps/?pt={{ o.longitude }},{{ o.latitude }}&z=17" target="_blank" rel="noopener" style="text-decoration:underline;">Xaritada</a>
+          {% endif %}
+        </div>
+        <div class="order-items">
+          {% for i in o.items.all %}{{ i.product_name }}{% if i.weight_kg %} ({{ i.weight_kg }} kg){% endif %} x{{ i.quantity }}{% if i.inscription %} — «{{ i.inscription }}»{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}
+        </div>
+        <div class="order-foot">
+          <span class="mono" style="font-size:16px;font-weight:700;">
+            {% if o.payment_method == "naqd" %}Naqd olinadi: {{ o.total_amount|floatformat:0 }} so'm{% else %}To'langan ({{ o.get_payment_method_display }}){% endif %}
+          </span>
+          <form method="post" action="{% url 'courier_update_status' o.id %}">
+            {% csrf_token %}
+            {% if o.status == "yetkazilmoqda" %}
+              <input type="hidden" name="status" value="yetkazildi">
+              <button type="submit" class="pill pill-dark pill-sm" onclick="return confirm('Buyurtma #{{ o.id }} yetkazildimi?');">✓ Yetkazildi</button>
+            {% else %}
+              <input type="hidden" name="status" value="yetkazilmoqda">
+              <button type="submit" class="pill pill-ghost pill-sm">🚗 Yo'lga chiqdim</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state">Hozircha sizga biriktirilgan buyurtma yo'q</div>
+    {% endfor %}
+  </div>
+
+  {% if delivered_orders %}
+    <h2 style="font-size:18px;margin:32px 0 12px;">Oxirgi yetkazilganlar</h2>
+    <div class="card">
+      {% for o in delivered_orders %}
+        <div style="display:flex;justify-content:space-between;font-size:14px;padding:6px 0;">
+          <span>№ {{ o.id }} — {{ o.address|truncatechars:40 }}</span>
+          <span class="mono">{{ o.delivered_at|date:"d.m H:i" }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

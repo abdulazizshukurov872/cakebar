@@ -17,6 +17,13 @@ class RefundRequestAdmin(admin.ModelAdmin):
 
     actions = ["approve_selected", "reject_selected"]
 
+    def get_readonly_fields(self, request, obj=None):
+        # Once resolved, the decision is final — flipping it back to
+        # "kutilmoqda" and approving again would pay the customer twice.
+        if obj and obj.status != "kutilmoqda":
+            return self.readonly_fields + ("status", "refund_amount")
+        return self.readonly_fields
+
     def save_model(self, request, obj, form, change):
         previous_status = None
         if change:

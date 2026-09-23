@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 {% load i18n_extra %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
 {% block content %}
 <div class="section narrow">
   <h1 class="heading" style="margin-bottom:24px;">{% t "place_order" %}</h1>
   <div class="card">
-    <p style="margin-bottom:8px;">{% t "total" %}: <b class="mono">{{ cart.get_total_price|floatformat:0 }} so'm</b></p>
+    {% include "orders/_price_summary.html" %}
+    <p style="font-size:12px;color:var(--color-smoke);margin-bottom:12px;">Promo-kod va ball chegirmasi buyurtma tasdiqlanganda hisoblanadi.</p>
     <p style="margin-bottom:4px;font-size:13px;color:var(--color-smoke);">{% t "wallet_balance" %}: <b class="mono">{{ user.balance|floatformat:0 }} so'm</b></p>
     <p style="margin-bottom:16px;font-size:13px;color:var(--color-smoke);">Loyallik ballaringiz: <b class="mono">{{ user.loyalty_points }}</b> (1 ball = 100 so'm)</p>
     <form method="post">
@@ -14,6 +18,16 @@
         <datalist id="saved-addresses">
           {% for a in addresses %}<option value="{{ a.address_line }}">{{ a.label }}</option>{% endfor %}
         </datalist>
+      </div>
+      <div class="form-row">
+        <label>Xaritadan manzilni belgilang (ixtiyoriy) — bosib joy tanlang</label>
+        <div id="checkout-map" style="height:260px;width:100%;border-radius:16px;margin-top:6px;background:#e8e5df;"></div>
+        <div id="checkout-map-status" style="font-size:12px;color:var(--color-smoke);margin-top:4px;"></div>
+        {{ form.latitude }}{{ form.longitude }}
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>{{ form.delivery_date.label_tag }}{{ form.delivery_date }}{{ form.delivery_date.errors }}</div>
+        <div>{{ form.delivery_slot.label_tag }}{{ form.delivery_slot }}{{ form.delivery_slot.errors }}</div>
       </div>
       <div class="form-row">{{ form.payment_method.label_tag }}{{ form.payment_method }}{{ form.payment_method.errors }}</div>
       <div class="form-row">{{ form.promo_code.label_tag }}{{ form.promo_code }}{{ form.promo_code.errors }}</div>
@@ -26,4 +40,52 @@
     </form>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+window.addEventListener("load", function() {
+  var statusEl = document.getElementById("checkout-map-status");
+  if (typeof L === "undefined") {
+    if (statusEl) { statusEl.textContent = "Xarita yuklanmadi (internet aloqasini tekshiring)."; }
+    return;
+  }
+  var latInput = document.getElementById("id_latitude");
+  var lngInput = document.getElementById("id_longitude");
+  var start = [41.311081, 69.240562]; // Toshkent markazi
+  var map = L.map("checkout-map").setView(start, 12);
+  var tiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Tiles &copy; Esri"
+  }).addTo(map);
+  var tileErrors = 0;
+  tiles.on("tileerror", function() {
+    tileErrors++;
+    if (tileErrors > 5 && statusEl) {
+      statusEl.style.color = "#b00020";
+      statusEl.style.fontWeight = "700";
+      statusEl.textContent = "Xarita plitkalari yuklanmadi — tarmoq/provayder cheklovi bo'lishi mumkin.";
+    }
+  });
+  setTimeout(function() { map.invalidateSize(); }, 200);
+
+  var marker = null;
+  function setMarker(lat, lng) {
+    if (marker) { map.removeLayer(marker); }
+    marker = L.marker([lat, lng]).addTo(map);
+    latInput.value = lat.toFixed(6);
+    lngInput.value = lng.toFixed(6);
+    if (statusEl) { statusEl.textContent = "Tanlandi: " + lat.toFixed(5) + ", " + lng.toFixed(5); }
+  }
+  map.on("click", function(e) {
+    setMarker(e.latlng.lat, e.latlng.lng);
+    fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + e.latlng.lat + "&lon=" + e.latlng.lng)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var addressField = document.getElementById("id_address");
+        if (data && data.display_name && addressField && !addressField.value) {
+          addressField.value = data.display_name;
+        }
+      }).catch(function() {});
+  });
+});
+</script>
 {% endblock %}

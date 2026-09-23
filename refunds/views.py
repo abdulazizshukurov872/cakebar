@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from notifications import telegram
 from orders.models import Order
 
 from .forms import RefundRequestForm
@@ -21,6 +22,10 @@ def refund_create(request, order_id):
             refund.order = order
             refund.user = request.user
             refund.save()
+            telegram.notify_admins(
+                f"↩️ Qaytarish so'rovi: buyurtma #{order.id}, {order.total_amount:.0f} so'm\n"
+                f"Sabab: {refund.get_reason_display()}" + (f"\nIzoh: {refund.comment}" if refund.comment else "")
+            )
             messages.success(request, "Qaytarish so'rovi yuborildi. Admin ko'rib chiqadi.")
             return redirect("order_list")
     else:

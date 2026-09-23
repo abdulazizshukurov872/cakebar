@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
+from django.db.models import F
 from django.utils import timezone
 
 from orders.models import Order
@@ -41,24 +44,45 @@ class RefundRequest(models.Model):
     def approve(self, amount, admin_comment=""):
         from notifications.services import notify
 
-        self.status = "tasdiqlandi"
-        self.refund_amount = amount
-        self.admin_comment = admin_comment
-        self.resolved_at = timezone.now()
-        self.save()
-        self.order.status = "qaytarildi"
-        self.order.save()
-        if self.order.payment_method == "naqd":
-            user = self.user
-            user.balance = user.balance + amount
-            user.save(update_fields=["balance"])
-        notify(self.user, "Qaytarish tasdiqlandi", f"Buyurtma #{self.order.id} uchun {amount:.0f} so'm qaytarildi.", link="/my-orders/")
+        from accounts.models import User
+
+        amount = min(Decimal(amount), self.order.total_amount)
+        with transaction.atomic():
+            # The status filter makes a second approve (double click, bulk
+            # action on an already-approved row) a no-op instead of paying twice.
+            claimed = RefundRequest.objects.filter(pk=self.pk, status="kutilmoqda").update(
+                status="tasdiqlandi", refund_amount=amount,
+                admin_comment=admin_comment, resolved_at=timezone.now(),
+            )
+            if not claimed:
+                return False
+            self.refresh_from_db()
+            self.order.status = "qaytarildi"
+            self.order.save()
+            # Money goes back to the wallet whatever the original payment
+            # method was; loyalty points earned on this order are taken back
+            # (as many as the customer still has).
+            user = User.objects.select_for_update().get(pk=self.user_id)
+            points_back = min(self.order.points_earned, user.loyalty_points)
+            User.objects.filter(pk=user.pk).update(
+                balance=F("balance") + amount,
+                loyalty_points=F("loyalty_points") - points_back,
+            )
+        notify(
+            self.user, "Qaytarish tasdiqlandi",
+            f"Buyurtma #{self.order.id} uchun {amount:.0f} so'm wallet balansingizga qaytarildi.",
+            link="/my-orders/",
+        )
+        return True
 
     def reject(self, admin_comment=""):
         from notifications.services import notify
 
-        self.status = "rad_etildi"
-        self.admin_comment = admin_comment
-        self.resolved_at = timezone.now()
-        self.save()
+        claimed = RefundRequest.objects.filter(pk=self.pk, status="kutilmoqda").update(
+            status="rad_etildi", admin_comment=admin_comment, resolved_at=timezone.now(),
+        )
+        if not claimed:
+            return False
+        self.refresh_from_db()
         notify(self.user, "Qaytarish so'rovi rad etildi", admin_comment or "Sabab ko'rsatilmagan.", link="/my-orders/")
+        return True

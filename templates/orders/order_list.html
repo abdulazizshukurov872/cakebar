@@ -5,22 +5,22 @@
 
 <div class="orders-list">
   {% for o in orders %}
-    <div class="order-card">
+    <div class="order-card" data-order-tracker {% if o.status != "bekor" and o.status != "qaytarildi" and o.status != "yetkazildi" %}data-order-id="{{ o.id }}"{% endif %}>
       <div class="order-head">
         <div>
           <div class="order-id">№ {{ o.id }}</div>
           <div style="font-size:13px;color:var(--color-smoke);">{{ o.created_at|date:"d.m.Y H:i" }}</div>
         </div>
-        <span class="status-badge status-{{ o.status }}">{% status_t o.status %}</span>
+        <span class="status-badge status-{{ o.status }}" data-status-badge>{% status_t o.status %}</span>
       </div>
       <div class="order-items">
-        {% for i in o.items.all %}{{ i.product_name }} x{{ i.quantity }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        {% for i in o.items.all %}{{ i.product_name }}{% if i.weight_kg %} ({{ i.weight_kg }} kg){% endif %} x{{ i.quantity }}{% if i.inscription %} — «{{ i.inscription }}»{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}
       </div>
 
       {% if o.status != "bekor" and o.status != "qaytarildi" %}
-        <div class="status-stepper">
+        <div class="status-stepper" data-status-stepper>
           {% for step in o.STATUS_STEPS %}
-            <div class="step {% if forloop.counter0 <= o.status_step_index %}done{% endif %} {% if forloop.counter0 == o.status_step_index %}current{% endif %}">
+            <div class="step {% if forloop.counter0 <= o.status_step_index %}done{% endif %} {% if forloop.counter0 == o.status_step_index %}current{% endif %}" data-step="{{ step }}">
               <span class="dot"></span>
               <span class="label">{% status_t step %}</span>
             </div>
@@ -33,6 +33,9 @@
           Chegirma{% if o.promo_code %} (promo-kod "{{ o.promo_code }}"){% endif %}{% if o.points_used %} + {{ o.points_used }} ball{% endif %}: −{{ o.discount_amount|floatformat:0 }} so'm
         </div>
       {% endif %}
+      {% if o.delivery_fee %}
+        <div style="font-size:13px;color:var(--color-slate);margin-bottom:4px;">Yetkazish: {{ o.delivery_fee|floatformat:0 }} so'm</div>
+      {% endif %}
       {% if o.points_earned %}
         <div style="font-size:13px;color:var(--color-slate);margin-bottom:4px;">+{{ o.points_earned }} ball qo'shildi</div>
       {% endif %}
@@ -41,6 +44,8 @@
         <div style="font-size:13px;color:var(--color-slate);margin:8px 0;">
           {% if o.status == "yetkazildi" %}
             {% status_t "yetkazildi" %}: {{ o.delivered_at|date:"d.m.Y H:i" }}
+          {% elif o.delivery_date %}
+            Yetkazish: {{ o.delivery_date|date:"d.m.Y" }}, {{ o.get_delivery_slot_display }}
           {% else %}
             {{ o.estimated_delivery_at|date:"d.m.Y H:i" }}
           {% endif %}
@@ -55,6 +60,7 @@
             {% csrf_token %}
             <button type="submit" class="pill pill-ghost pill-sm">Yana buyurtma qilish</button>
           </form>
+          <a href="{% url 'order_invoice_pdf' o.id %}" class="pill pill-ghost pill-sm">PDF chek</a>
           {% if o.can_cancel %}
             <form method="post" action="{% url 'order_cancel' o.id %}" onsubmit="return confirm('Buyurtmani bekor qilishni tasdiqlaysizmi?');">
               {% csrf_token %}
@@ -92,4 +98,36 @@
     <div class="empty-state">{% t "empty_state_no_orders" %}<br><a href="{% url 'product_list' %}" class="pill pill-ghost" style="margin-top:12px;">{% t "shop_now" %}</a></div>
   {% endfor %}
 </div>
+<script>
+(function() {
+  function poll() {
+    document.querySelectorAll("[data-order-tracker][data-order-id]").forEach(function(card) {
+      var orderId = card.getAttribute("data-order-id");
+      fetch("/orders/" + orderId + "/status.json/")
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var badge = card.querySelector("[data-status-badge]");
+          if (badge) {
+            badge.textContent = data.status_display;
+            badge.className = "status-badge status-" + data.status;
+          }
+          var stepper = card.querySelector("[data-status-stepper]");
+          if (stepper) {
+            stepper.querySelectorAll(".step").forEach(function(stepEl, idx) {
+              stepEl.classList.toggle("done", idx <= data.status_step_index);
+              stepEl.classList.toggle("current", idx === data.status_step_index);
+            });
+          }
+          if (data.status === "yetkazildi" || data.status === "bekor" || data.status === "qaytarildi") {
+            card.removeAttribute("data-order-id");
+          }
+        })
+        .catch(function() {});
+    });
+  }
+  if (document.querySelector("[data-order-tracker][data-order-id]")) {
+    setInterval(poll, 8000);
+  }
+})();
+</script>
 {% endblock %}
