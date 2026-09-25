@@ -43,7 +43,7 @@ def admin_chat_list(request):
             last_at=Max("support_thread__created_at"),
             unread=Count("support_thread", filter=Q(support_thread__is_from_admin=False, support_thread__read_by_admin=False)),
         )
-        .order_by("-last_at")
+        .order_by("-unread", "-last_at")
         .distinct()
     )
     return render(request, "support/admin_chat_list.html", {"threads": threads})

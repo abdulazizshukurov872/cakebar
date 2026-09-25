@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="section narrow">
-  <h1 class="heading" style="margin-bottom:24px;">Mijozlar bilan chat</h1>
+  <h1 class="heading" style="margin-bottom:8px;">Mijozlar bilan chat</h1>
+  <p style="color:var(--color-smoke);margin-bottom:24px;">O'qilmagan suhbatlar tepada — har biriga 24 soat ichida javob berishga harakat qiling.</p>
   <div class="card">
     {% for c in threads %}
-      <a href="{% url 'admin_chat_detail' c.id %}" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--color-fog, #eee);">
+      <a href="{% url 'admin_chat_detail' c.id %}" style="display:flex;justify-content:space-between;align-items:center;padding:12px;margin:0 -12px;border-bottom:1px solid var(--color-fog, #eee);{% if c.unread %}background:rgba(212,150,83,0.08);{% endif %}">
         <span>{{ c.phone|default:c.username }}{% if c.get_full_name %} — {{ c.get_full_name }}{% endif %}</span>
         <span>
           {% if c.unread %}<span class="pill pill-dark pill-sm">{{ c.unread }} yangi</span>{% endif %}

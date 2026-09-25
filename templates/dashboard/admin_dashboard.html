@@ -16,7 +16,7 @@
       <a class="sidebar-link" href="{% url 'admin:reviews_review_changelist' %}">Sharhlar</a>
       <a class="sidebar-link" href="{% url 'admin:pages_location_changelist' %}">Filiallar</a>
       <a class="sidebar-link" href="{% url 'admin:accounts_user_changelist' %}">Foydalanuvchilar</a>
-      <a class="sidebar-link" href="{% url 'admin_chat_list' %}">Mijozlar bilan chat</a>
+      <a class="sidebar-link" href="{% url 'admin_chat_list' %}">Mijozlar bilan chat{% if unread_admin_chat_count %} ({{ unread_admin_chat_count }}){% endif %}</a>
       <div class="sidebar-divider"></div>
       <a class="sidebar-link" href="{% url 'admin:catalog_product_add' %}">+ Mahsulot qo'shish</a>
       <a class="sidebar-link" href="{% url 'admin:promotions_promocode_add' %}">+ Promo-kod qo'shish</a>
