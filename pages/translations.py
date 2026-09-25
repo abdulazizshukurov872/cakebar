@@ -36,6 +36,9 @@ TRANSLATIONS = {
         "quantity": "Miqdor", "remove": "o'chirish", "overview": "Umumiy",
         "sort_by": "Saralash", "sort_newest": "Yangilari", "sort_price_asc": "Arzon narx",
         "sort_price_desc": "Qimmat narx", "sort_rating": "Reyting bo'yicha",
+        "contact_admin": "Admin bilan bog'lanish", "chat_intro": "Savolingiz yoki muammoingiz bo'lsa, yozing — administrator 24 soat ichida ko'rib chiqadi.",
+        "chat_placeholder": "Xabar yozing... (Enter — yuborish, Shift+Enter — yangi qator)", "chat_empty": "Hali xabar yo'q. Savolingiz bo'lsa, quyidan yozing.",
+        "chat_you": "Siz", "chat_sent_notice": "Xabaringiz yuborildi. Administrator 24 soat ichida ko'rib chiqadi.", "send": "Yuborish",
     },
     "ru": {
         "home": "Главная", "products": "Товары", "my_orders": "Мои заказы",
@@ -74,6 +77,9 @@ TRANSLATIONS = {
         "quantity": "Количество", "remove": "удалить", "overview": "Обзор",
         "sort_by": "Сортировка", "sort_newest": "Новинки", "sort_price_asc": "Сначала дешевле",
         "sort_price_desc": "Сначала дороже", "sort_rating": "По рейтингу",
+        "contact_admin": "Связаться с администратором", "chat_intro": "Если у вас есть вопрос или проблема, напишите — администратор ответит в течение 24 часов.",
+        "chat_placeholder": "Напишите сообщение... (Enter — отправить, Shift+Enter — новая строка)", "chat_empty": "Сообщений пока нет. Если есть вопрос, напишите ниже.",
+        "chat_you": "Вы", "chat_sent_notice": "Ваше сообщение отправлено. Администратор ответит в течение 24 часов.", "send": "Отправить",
     },
     "en": {
         "home": "Home", "products": "Products", "my_orders": "My Orders",
@@ -112,6 +118,9 @@ TRANSLATIONS = {
         "quantity": "Quantity", "remove": "remove", "overview": "Overview",
         "sort_by": "Sort by", "sort_newest": "Newest", "sort_price_asc": "Price: low to high",
         "sort_price_desc": "Price: high to low", "sort_rating": "Top rated",
+        "contact_admin": "Contact admin", "chat_intro": "Have a question or issue? Write below — admin will review it within 24 hours.",
+        "chat_placeholder": "Write a message... (Enter — send, Shift+Enter — new line)", "chat_empty": "No messages yet. If you have a question, write below.",
+        "chat_you": "You", "chat_sent_notice": "Your message has been sent. Admin will review it within 24 hours.", "send": "Send",
     },
 }
 

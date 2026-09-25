@@ -1,27 +1,27 @@
 {% extends "dashboard/account_layout.html" %}
 {% load i18n_extra %}
 {% block account_content %}
-<h1 class="heading" style="margin-bottom:8px;">Admin bilan bog'lanish</h1>
-<p style="color:var(--color-smoke);margin-bottom:16px;">Savolingiz yoki muammoingiz bo'lsa, yozing — administrator 24 soat ichida ko'rib chiqadi.</p>
+<h1 class="heading" style="margin-bottom:8px;">{% t "contact_admin" %}</h1>
+<p style="color:var(--color-smoke);margin-bottom:16px;">{% t "chat_intro" %}</p>
 <div class="card" style="max-width:640px;">
   <div id="chat-thread" style="max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
     {% for m in chat_messages %}
       <div style="align-self:{% if m.is_from_admin %}flex-start{% else %}flex-end{% endif %};max-width:80%;">
         <div style="font-size:11px;color:var(--color-smoke);text-transform:uppercase;margin-bottom:2px;">
-          {% if m.is_from_admin %}CakeBar{% else %}Siz{% endif %} · {{ m.created_at|date:"d.m H:i" }}
+          {% if m.is_from_admin %}CakeBar{% else %}{% t "chat_you" %}{% endif %} · {{ m.created_at|date:"d.m H:i" }}
         </div>
         <div style="padding:10px 14px;border-radius:8px;white-space:pre-wrap;background:{% if m.is_from_admin %}var(--color-cream, #f2f2f2){% else %}var(--color-carbon-black);color:#fff{% endif %};">
           {{ m.text }}
         </div>
       </div>
     {% empty %}
-      <p style="color:var(--color-smoke);">Hali xabar yo'q. Savolingiz bo'lsa, quyidan yozing.</p>
+      <p style="color:var(--color-smoke);">{% t "chat_empty" %}</p>
     {% endfor %}
   </div>
   <form method="post" style="display:flex;gap:8px;align-items:flex-end;">
     {% csrf_token %}
-    <textarea name="text" placeholder="Xabar yozing... (Enter — yuborish, Shift+Enter — yangi qator)" required rows="2" style="flex:1;resize:vertical;" class="input" id="chat-input"></textarea>
-    <button type="submit" class="pill pill-dark pill-sm">Yuborish</button>
+    <textarea name="text" placeholder="{% t 'chat_placeholder' %}" required rows="2" style="flex:1;resize:vertical;" class="input" id="chat-input"></textarea>
+    <button type="submit" class="pill pill-dark pill-sm">{% t "send" %}</button>
   </form>
 </div>
 <script>
