@@ -34,6 +34,18 @@ CF1 = IMG.format("1447933601403-0c6688de566e")  # coffee beans
 CF2 = IMG.format("1494314671902-399b18174975")  # black coffee cup
 CF3 = IMG.format("1521737604893-d14cc237f11d")  # coffee pouring into cup
 CF4 = IMG.format("1522992319-0365e5f11656")     # latte-art coffees, toast
+FF1 = IMG.format("1568901346375-23c9450c58cd")  # classic cheeseburger
+FF2 = IMG.format("1550317138-10000687a72b")     # loaded double burger
+FF3 = IMG.format("1565299624946-b28f40a0ae38")  # bbq chicken pizza
+FF4 = IMG.format("1513104890138-7c749659a591")  # margherita pizza (close-up)
+FF5 = IMG.format("1601924582970-9238bcb495d9")  # pepperoni pizza slice
+FF6 = IMG.format("1541592106381-b31e9677c0e5")  # french fries
+FF7 = IMG.format("1562967914-608f82629710")     # crispy chicken strips
+FF8 = IMG.format("1608039755401-742074f0548d")  # buffalo chicken wings
+FF9 = IMG.format("1521305916504-4a1121188589")  # club sandwich
+FF10 = IMG.format("1554433607-66b5efe9d304")    # roast beef sandwich
+FF11 = IMG.format("1552332386-f8dd00dc2f85")    # street tacos
+FF12 = IMG.format("1626700051175-6818013e1d4f") # chicken shawarma wrap
 CB3 = IMG.format("1517686469429-8bdb88b9f907")  # boxed chocolate pralines
 NI1 = IMG.format("1509365465985-25d11c17e812")  # cinnamon rolls
 NI3 = IMG.format("1533134242443-d4fd215305ad")  # cheesecake slice
@@ -118,6 +130,19 @@ NUTRITION = {
     "Chak-chak + Qora kofe": (320, 5.0, 13.0, 48.0),
     "Pechenye to'plami + Milkshake": (380, 5.0, 20.0, 48.0),
     "Rezavorli tort + Smuzi": (260, 3.5, 12.0, 35.0),
+
+    "Chizburger": (280, 15.0, 16.0, 22.0),
+    "Dabl burger": (320, 19.0, 20.0, 23.0),
+    "BBQ tovuq pitsasi": (260, 12.0, 10.0, 30.0),
+    "Margarita pitsa": (250, 11.0, 9.5, 31.0),
+    "Pepperoni pitsa": (270, 12.5, 12.0, 29.0),
+    "Kartoshka fri": (310, 3.5, 15.0, 40.0),
+    "Tovuq striplari": (250, 18.0, 13.0, 14.0),
+    "Bufalo qanotlari": (280, 20.0, 19.0, 6.0),
+    "Klub sendvich": (240, 14.0, 10.0, 24.0),
+    "Rostbif sendvich": (220, 15.0, 8.0, 22.0),
+    "Meksika tako seti": (200, 10.0, 8.0, 22.0),
+    "Tovuq shaurma": (230, 13.0, 9.0, 25.0),
 }
 
 # uz nomi -> (miqdor_uz, miqdor_ru, miqdor_en)
@@ -194,6 +219,19 @@ QUANTITY = {
     "Chak-chak + Qora kofe": ("200 gr + 220 ml", "200 г + 220 мл", "200 g + 220 ml"),
     "Pechenye to'plami + Milkshake": ("200 gr + 450 ml", "200 г + 450 мл", "200 g + 450 ml"),
     "Rezavorli tort + Smuzi": ("1 bo'lak + 400 ml", "1 кусок + 400 мл", "1 slice + 400 ml"),
+
+    "Chizburger": ("220 gr (1 dona)", "220 г (1 шт.)", "220 g (1 pc)"),
+    "Dabl burger": ("320 gr (1 dona)", "320 г (1 шт.)", "320 g (1 pc)"),
+    "BBQ tovuq pitsasi": ("32 sm (4 bo'lak)", "32 см (4 куска)", "32 cm (4 slices)"),
+    "Margarita pitsa": ("30 sm (4 bo'lak)", "30 см (4 куска)", "30 cm (4 slices)"),
+    "Pepperoni pitsa": ("32 sm (6 bo'lak)", "32 см (6 кусков)", "32 cm (6 slices)"),
+    "Kartoshka fri": ("250 gr", "250 г", "250 g"),
+    "Tovuq striplari": ("280 gr (6 dona)", "280 г (6 шт.)", "280 g (6 pcs)"),
+    "Bufalo qanotlari": ("350 gr (8 dona)", "350 г (8 шт.)", "350 g (8 pcs)"),
+    "Klub sendvich": ("260 gr (1 dona)", "260 г (1 шт.)", "260 g (1 pc)"),
+    "Rostbif sendvich": ("230 gr (1 dona)", "230 г (1 шт.)", "230 g (1 pc)"),
+    "Meksika tako seti": ("3 dona (~270 gr)", "3 шт. (~270 г)", "3 pcs (~270 g)"),
+    "Tovuq shaurma": ("300 gr (1 dona)", "300 г (1 шт.)", "300 g (1 pc)"),
 }
 
 # key -> (name_uz, name_ru, name_en)
@@ -210,6 +248,7 @@ CATEGORIES = [
     ("keks", "Keks va muffinlar", "Кексы и маффины", "Cupcakes & Muffins"),
     ("ichimlik", "Ichimliklar", "Напитки", "Drinks"),
     ("qahva", "Qahva", "Кофе", "Coffee"),
+    ("fastfud", "Fastfud", "Фастфуд", "Fast Food"),
     ("combo", "Haftalik chegirmalar", "Скидки недели", "Weekly Deals"),
 ]
 
@@ -427,6 +466,55 @@ PRODUCTS = [
      ("Muzli latte", "300ml, sovuq ichimlik", "Espresso, sovuq sut, muz"),
      ("Айс латте", "300мл, холодный напиток", "Эспрессо, холодное молоко, лёд"),
      ("Iced Latte", "300ml, cold drink", "Espresso, cold milk, ice")),
+
+    ("fastfud", 32000, None, True, 4.7, FF1,
+     ("Chizburger", "Mol go'shti kotleti, erigan pishloq, yangi sabzavotlar", "Bulochka, mol go'shti, pishloq, pomidor, salat barglari, piyoz, sous"),
+     ("Чизбургер", "Говяжья котлета, плавленый сыр, свежие овощи", "Булочка, говядина, сыр, помидор, листья салата, лук, соус"),
+     ("Cheeseburger", "Beef patty, melted cheese, fresh vegetables", "Bun, beef, cheese, tomato, lettuce, onion, sauce")),
+    ("fastfud", 42000, 36000, True, 4.8, FF2,
+     ("Dabl burger", "Ikki qavat go'sht kotleti, bekon, pishloq", "Bulochka, 2x mol go'shti, bekon, pishloq, sous, tuzlangan bodring"),
+     ("Дабл бургер", "Двойная котлета, бекон, сыр", "Булочка, 2x говядина, бекон, сыр, соус, маринованный огурец"),
+     ("Double Burger", "Double beef patty, bacon, cheese", "Bun, 2x beef, bacon, cheese, sauce, pickles")),
+    ("fastfud", 55000, None, True, 4.6, FF3,
+     ("BBQ tovuq pitsasi", "32 sm, tovuq, BBQ sous, qizil piyoz", "Xamir, pomidor sousi, mocarella, tovuq go'shti, BBQ sous, qizil piyoz"),
+     ("Пицца BBQ с курицей", "32 см, курица, соус BBQ, красный лук", "Тесто, томатный соус, моцарелла, курица, соус BBQ, красный лук"),
+     ("BBQ Chicken Pizza", "32 cm, chicken, BBQ sauce, red onion", "Dough, tomato sauce, mozzarella, chicken, BBQ sauce, red onion")),
+    ("fastfud", 48000, None, True, 4.7, FF4,
+     ("Margarita pitsa", "Klassik, mocarella va rayhon bilan", "Xamir, pomidor sousi, mocarella, rayhon, zaytun moyi"),
+     ("Пицца Маргарита", "Классика, с моцареллой и базиликом", "Тесто, томатный соус, моцарелла, базилик, оливковое масло"),
+     ("Margherita Pizza", "Classic, with mozzarella and basil", "Dough, tomato sauce, mozzarella, basil, olive oil")),
+    ("fastfud", 52000, 44000, True, 4.8, FF5,
+     ("Pepperoni pitsa", "Achchiq pepperoni kolbasa, mo'l pishloq", "Xamir, pomidor sousi, mocarella, pepperoni kolbasa"),
+     ("Пицца Пепперони", "Острая пепперони, много сыра", "Тесто, томатный соус, моцарелла, колбаса пепперони"),
+     ("Pepperoni Pizza", "Spicy pepperoni, extra cheese", "Dough, tomato sauce, mozzarella, pepperoni")),
+    ("fastfud", 18000, None, True, 4.6, FF6,
+     ("Kartoshka fri", "Xrustyash, tuzlangan, ketchup bilan", "Kartoshka, kungaboqar moyi, tuz"),
+     ("Картофель фри", "Хрустящий, солёный, с кетчупом", "Картофель, подсолнечное масло, соль"),
+     ("French Fries", "Crispy, salted, served with ketchup", "Potato, sunflower oil, salt")),
+    ("fastfud", 36000, None, True, 4.7, FF7,
+     ("Tovuq striplari", "Panirovkada qovurilgan, sous bilan", "Tovuq filesi, panировка, tuxum, sous"),
+     ("Куриные стрипсы", "Обжаренные в панировке, с соусом", "Куриное филе, панировка, яйцо, соус"),
+     ("Chicken Strips", "Breaded and fried, served with sauce", "Chicken fillet, breadcrumbs, egg, sauce")),
+    ("fastfud", 45000, 38000, True, 4.7, FF8,
+     ("Bufalo qanotlari", "Achchiq bufalo sous, sovuq sous bilan", "Tovuq qanotlari, bufalo sous, sarimsoq, sovuq sous"),
+     ("Крылышки Баффало", "Острый соус баффало, с холодным соусом", "Куриные крылышки, соус баффало, чеснок, холодный соус"),
+     ("Buffalo Wings", "Spicy buffalo sauce, served with dip", "Chicken wings, buffalo sauce, garlic, cool dip")),
+    ("fastfud", 34000, None, True, 4.6, FF9,
+     ("Klub sendvich", "Uch qavat, tovuq, bekon, sabzavotlar", "Tost non, tovuq go'shti, bekon, pomidor, salat barglari, mayonez"),
+     ("Клаб сэндвич", "Три слоя, курица, бекон, овощи", "Тост, курица, бекон, помидор, листья салата, майонез"),
+     ("Club Sandwich", "Triple-decker with chicken, bacon, veggies", "Toast bread, chicken, bacon, tomato, lettuce, mayo")),
+    ("fastfud", 33000, None, True, 4.5, FF10,
+     ("Rostbif sendvich", "Yupqa kesilgan mol go'shti, yangi sabzavotlar", "Bagett non, rostbif, pomidor, salat barglari, sous"),
+     ("Сэндвич с ростбифом", "Тонко нарезанная говядина, свежие овощи", "Багет, ростбиф, помидор, листья салата, соус"),
+     ("Roast Beef Sandwich", "Thin-sliced beef, fresh vegetables", "Baguette, roast beef, tomato, lettuce, sauce")),
+    ("fastfud", 30000, None, True, 4.6, FF11,
+     ("Meksika tako seti", "3 dona, mol go'shti, achchiq sous", "Makkajo'xori tortilya, mol go'shti, piyoz, kориандр, laym"),
+     ("Мексиканские тако", "3 шт., говядина, острый соус", "Кукурузная тортилья, говядина, лук, кинза, лайм"),
+     ("Mexican Tacos", "3 pieces, beef, spicy sauce", "Corn tortilla, beef, onion, cilantro, lime")),
+    ("fastfud", 35000, 29000, True, 4.8, FF12,
+     ("Tovuq shaurma", "Lavashda, sabzavotlar va sous bilan", "Lavash, tovuq go'shti, karam, sabzi, sous"),
+     ("Куриная шаурма", "В лаваше, с овощами и соусом", "Лаваш, курица, капуста, морковь, соус"),
+     ("Chicken Shawarma", "In flatbread, with vegetables and sauce", "Flatbread, chicken, cabbage, carrot, sauce")),
 
     ("combo", 30000, 16500, True, 4.8, Y,
      ("Napoleon + Espresso", "Kombinatsiya: 1 ta Napoleon pirojnoye + 1 ta espresso", "Napoleon pirojnoye (qatlamli xamir, vanil krem) + espresso (arabika)"),
