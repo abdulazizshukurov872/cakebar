@@ -10,6 +10,7 @@
       <a class="sidebar-link {% if active == 'orders' %}active{% endif %}" href="{% url 'order_list' %}">{% t "my_orders" %}</a>
       <a class="sidebar-link {% if active == 'favorites' %}active{% endif %}" href="{% url 'favorite_list' %}">{% t "favorites" %}</a>
       <a class="sidebar-link {% if active == 'profile' %}active{% endif %}" href="{% url 'profile' %}">{% t "profile" %}</a>
+      <a class="sidebar-link {% if active == 'chat' %}active{% endif %}" href="{% url 'customer_chat' %}">Yordam{% if unread_chat_count %} ({{ unread_chat_count }}){% endif %}</a>
       <div class="sidebar-divider"></div>
       <h3>Wallet</h3>
       <p class="mono" style="font-size:20px;font-weight:700;">{{ user.balance|floatformat:0 }} so'm</p>

@@ -30,12 +30,13 @@ def check_password_strength(form, field, password, user):
             form.add_error(field, UZ_PASSWORD_ERRORS.get(error.code, error.messages[0]))
 
 
-def create_user(phone, password_hash, referred_by=None, phone_verified=False):
+def create_user(phone, password_hash, first_name="", last_name="", referred_by=None, phone_verified=False):
     """Create the account; returns the user with .plain_recovery_code set
     (shown once on the sign-up success page)."""
     recovery_code = generate_recovery_code()
     user = User(
         username=phone, phone=phone,
+        first_name=first_name, last_name=last_name,
         password=password_hash,
         recovery_code_hash=make_password(recovery_code),
         referred_by=referred_by,
@@ -47,8 +48,16 @@ def create_user(phone, password_hash, referred_by=None, phone_verified=False):
 
 
 class SignUpForm(forms.Form):
-    phone = forms.CharField(label="Telefon raqam", max_length=32, widget=forms.TextInput(attrs={"placeholder": "+998 90 123 45 67", "autofocus": True}))
+    first_name = forms.CharField(label="Ism", max_length=150, widget=forms.TextInput(attrs={"placeholder": "Ismingiz", "autofocus": True}))
+    last_name = forms.CharField(label="Familiya", max_length=150, required=False, widget=forms.TextInput(attrs={"placeholder": "Familiyangiz"}))
+    phone = forms.CharField(label="Telefon raqam", max_length=32, widget=forms.TextInput(attrs={"placeholder": "+998 90 123 45 67"}))
     password = forms.CharField(label="Parol", widget=forms.PasswordInput, help_text="Kamida 8 belgi, faqat raqamlardan iborat bo'lmasin.")
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data["first_name"].strip()
+        if not first_name:
+            raise forms.ValidationError("Ismingizni kiriting")
+        return first_name
 
     def clean_phone(self):
         phone = self.cleaned_data["phone"].strip()
@@ -69,6 +78,7 @@ class SignUpForm(forms.Form):
     def save(self, referred_by=None, phone_verified=False):
         return create_user(
             self.cleaned_data["phone"], make_password(self.cleaned_data["password"]),
+            first_name=self.cleaned_data["first_name"], last_name=self.cleaned_data.get("last_name", ""),
             referred_by=referred_by, phone_verified=phone_verified,
         )
 

@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('reviews.urls')),
     path('', include('notifications.urls')),
     path('', include('payments.urls')),
+    path('', include('support.urls')),
     path('api/', include('api.urls')),
     path('accounts/', include('accounts.urls')),
 ]

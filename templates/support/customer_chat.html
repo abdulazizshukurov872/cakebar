@@ -1,0 +1,26 @@
+{% extends "dashboard/account_layout.html" %}
+{% load i18n_extra %}
+{% block account_content %}
+<h1 class="heading" style="margin-bottom:16px;">Yordam / Admin bilan chat</h1>
+<div class="card" style="max-width:640px;">
+  <div style="max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+    {% for m in chat_messages %}
+      <div style="align-self:{% if m.is_from_admin %}flex-start{% else %}flex-end{% endif %};max-width:80%;">
+        <div style="font-size:11px;color:var(--color-smoke);text-transform:uppercase;margin-bottom:2px;">
+          {% if m.is_from_admin %}CakeBar{% else %}Siz{% endif %} · {{ m.created_at|date:"d.m H:i" }}
+        </div>
+        <div style="padding:10px 14px;border-radius:8px;background:{% if m.is_from_admin %}var(--color-cream, #f2f2f2){% else %}var(--color-carbon-black);color:#fff{% endif %};">
+          {{ m.text }}
+        </div>
+      </div>
+    {% empty %}
+      <p style="color:var(--color-smoke);">Hali xabar yo'q. Savolingiz bo'lsa, quyidan yozing — administrator tez orada javob beradi.</p>
+    {% endfor %}
+  </div>
+  <form method="post" style="display:flex;gap:8px;">
+    {% csrf_token %}
+    <input type="text" name="text" placeholder="Xabar yozing..." required style="flex:1;" class="input">
+    <button type="submit" class="pill pill-dark pill-sm">Yuborish</button>
+  </form>
+</div>
+{% endblock %}

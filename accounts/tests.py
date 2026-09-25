@@ -14,17 +14,28 @@ class SignupTests(TestCase):
         cache.clear()
 
     def test_weak_password_is_rejected(self):
-        resp = self.client.post(reverse("signup"), {"phone": "+998901234567", "password": "1234"})
+        resp = self.client.post(reverse("signup"), {"first_name": "Aziz", "phone": "+998901234567", "password": "1234"})
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertContains(resp, "kamida 8 belgi")
 
+    def test_signup_requires_first_name(self):
+        resp = self.client.post(reverse("signup"), {"phone": "+998901234567", "password": "Shirin-tort-2026"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(User.objects.exists())
+        self.assertContains(resp, "This field is required")
+
     def test_signup_without_sms_provider_creates_account(self):
         with mock.patch("notifications.eskiz.is_configured", return_value=False):
-            resp = self.client.post(reverse("signup"), {"phone": "+998901234567", "password": "Shirin-tort-2026"})
+            resp = self.client.post(reverse("signup"), {
+                "first_name": "Aziz", "last_name": "Karimov",
+                "phone": "+998901234567", "password": "Shirin-tort-2026",
+            })
         self.assertEqual(resp.status_code, 200)
         user = User.objects.get()
         self.assertFalse(user.phone_verified)
+        self.assertEqual(user.first_name, "Aziz")
+        self.assertEqual(user.last_name, "Karimov")
 
     @override_settings(PHONE_VERIFICATION=True)
     def test_signup_requires_sms_code_when_provider_configured(self):
@@ -36,7 +47,9 @@ class SignupTests(TestCase):
 
         with mock.patch("notifications.eskiz.is_configured", return_value=True), \
                 mock.patch("notifications.eskiz.send_sms", side_effect=fake_send):
-            resp = self.client.post(reverse("signup"), {"phone": "+998901234567", "password": "Shirin-tort-2026"})
+            resp = self.client.post(reverse("signup"), {
+                "first_name": "Aziz", "phone": "+998901234567", "password": "Shirin-tort-2026",
+            })
             self.assertRedirects(resp, reverse("signup_verify"))
             self.assertFalse(User.objects.exists())
 

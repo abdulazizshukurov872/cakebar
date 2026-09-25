@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'reviews',
     'notifications',
     'payments',
+    'support',
     'api',
 ]
 
@@ -112,6 +113,7 @@ TEMPLATES = [
                 'orders.context_processors.cart',
                 'pages.context_processors.language',
                 'notifications.context_processors.notifications',
+                'support.context_processors.unread_chat',
             ],
         },
     },
