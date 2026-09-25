@@ -1,7 +1,15 @@
-"""Additive, non-destructive: adds the Fastfud category and its products
-if they don't already exist, without touching the rest of the catalog
-(unlike `seed`, which wipes and recreates everything — not safe to run
-again once real customers have favorites/orders on the live site)."""
+"""Additive, non-destructive: creates/updates the Fastfud category and its
+products from seed.py's data, without touching the rest of the catalog or
+any other product's stock (unlike `seed`, which wipes and recreates
+everything — not safe to run again once real customers have
+favorites/orders on the live site).
+
+Text fields (name/description/composition/price/nutrition/quantity) are
+kept in sync with seed.py on every run — so a typo fix here reaches
+production on the next deploy without a manual DB edit. Stock fields
+(in_stock/stock_quantity) are only set when a product is first created,
+so this never overwrites stock an admin has since adjusted by hand.
+"""
 from django.core.management.base import BaseCommand
 
 from catalog.models import Category, Product
@@ -10,7 +18,7 @@ from .seed import CATEGORIES, NUTRITION, PRODUCTS, QUANTITY
 
 
 class Command(BaseCommand):
-    help = "Adds the Fastfud category/products without touching the rest of the catalog."
+    help = "Creates/updates the Fastfud category/products without touching the rest of the catalog."
 
     def handle(self, *args, **options):
         cat_data = next(c for c in CATEGORIES if c[0] == "fastfud")
@@ -20,27 +28,35 @@ class Command(BaseCommand):
         )
         self.stdout.write(f"Category '{name_uz}' {'created' if created else 'already existed'}.")
 
-        added = 0
+        created_count = updated_count = 0
         for cat_key, price, discount, in_stock, rating, image_url, uz, ru, en in PRODUCTS:
             if cat_key != "fastfud":
                 continue
             name, desc, comp = uz
             name_ru_p, desc_ru, comp_ru = ru
             name_en_p, desc_en, comp_en = en
-            if Product.objects.filter(name=name, category=category).exists():
-                continue
             calories, protein_g, fat_g, carbs_g = NUTRITION.get(name, (None, None, None, None))
             qty, qty_ru, qty_en = QUANTITY.get(name, ("", "", ""))
-            Product.objects.create(
-                name=name, description=desc, composition=comp,
-                name_ru=name_ru_p, description_ru=desc_ru, composition_ru=comp_ru,
-                name_en=name_en_p, description_en=desc_en, composition_en=comp_en,
-                quantity=qty, quantity_ru=qty_ru, quantity_en=qty_en,
-                category=category, price=price, discount_price=discount,
-                in_stock=in_stock, stock_quantity=0 if not in_stock else 25,
-                rating=rating, image_url=image_url,
-                calories=calories, protein_g=protein_g, fat_g=fat_g, carbs_g=carbs_g,
+            product, was_created = Product.objects.update_or_create(
+                name=name, category=category,
+                defaults=dict(
+                    description=desc, composition=comp,
+                    name_ru=name_ru_p, description_ru=desc_ru, composition_ru=comp_ru,
+                    name_en=name_en_p, description_en=desc_en, composition_en=comp_en,
+                    quantity=qty, quantity_ru=qty_ru, quantity_en=qty_en,
+                    price=price, discount_price=discount, image_url=image_url,
+                    rating=rating,
+                    calories=calories, protein_g=protein_g, fat_g=fat_g, carbs_g=carbs_g,
+                ),
             )
-            added += 1
+            if was_created:
+                product.in_stock = in_stock
+                product.stock_quantity = 0 if not in_stock else 25
+                product.save(update_fields=["in_stock", "stock_quantity"])
+                created_count += 1
+            else:
+                updated_count += 1
 
-        self.stdout.write(self.style.SUCCESS(f"Added {added} new fastfud product(s)."))
+        self.stdout.write(self.style.SUCCESS(
+            f"Fastfud: {created_count} created, {updated_count} updated (text/price kept in sync)."
+        ))
