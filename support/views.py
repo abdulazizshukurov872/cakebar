@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Max, Q, Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -25,6 +26,7 @@ def customer_chat(request):
             telegram.notify_admins(
                 f"💬 Yangi xabar ({request.user.phone or request.user.username}):\n{text[:300]}"
             )
+            messages.success(request, "Xabaringiz yuborildi. Administrator 24 soat ichida ko'rib chiqadi.")
         return redirect("customer_chat")
 
     ChatMessage.objects.filter(customer=request.user, is_from_admin=True, read_by_customer=False) \
