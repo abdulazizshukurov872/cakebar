@@ -81,8 +81,6 @@ def signup(request):
             pending = {
                 "phone": form.cleaned_data["phone"],
                 "password_hash": make_password(form.cleaned_data["password"]),
-                "first_name": form.cleaned_data["first_name"],
-                "last_name": form.cleaned_data.get("last_name", ""),
                 "referrer_id": referrer.pk if referrer else None,
             }
             if _send_signup_code(request, pending):
@@ -127,7 +125,6 @@ def signup_verify(request):
             referrer = User.objects.filter(pk=pending["referrer_id"]).first() if pending["referrer_id"] else None
             user = create_user(
                 pending["phone"], pending["password_hash"],
-                first_name=pending.get("first_name", ""), last_name=pending.get("last_name", ""),
                 referred_by=referrer, phone_verified=True,
             )
             return _finish_signup(request, user)
