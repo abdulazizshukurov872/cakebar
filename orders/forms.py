@@ -4,6 +4,8 @@ from django import forms
 from django.conf import settings
 from django.utils import timezone
 
+from payments import click, payme
+
 from .models import Order
 
 UZ_WEEKDAYS = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"]
@@ -52,6 +54,13 @@ class CheckoutForm(forms.ModelForm):
         if not self.is_bound:
             self.initial.setdefault("delivery_date", self.first_available()[0])
             self.initial.setdefault("delivery_slot", self.first_available()[1])
+        # "Karta" only actually works when a real gateway is wired up —
+        # otherwise selecting it silently fell through and got treated like
+        # cash, which is misleading (customer thinks they paid by card).
+        if not (payme.is_configured() or click.is_configured()):
+            self.fields["payment_method"].choices = [
+                (value, label) for value, label in Order.PAYMENT_CHOICES if value != "karta"
+            ]
 
     @staticmethod
     def first_available():
