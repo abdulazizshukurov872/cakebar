@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -26,6 +26,23 @@ def _parse_qty(value, default=1):
         return default
 
 
+def _is_ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+
+def _cart_fragment_response(request, cart):
+    """Re-renders just the cart card, with the fresh item count in a header
+    so the navbar badge (outside this fragment) can update too — used by
+    cart_update/cart_remove so a +/-/remove click doesn't reload the page
+    (and lose scroll position) for something this small."""
+    html = render(request, "orders/_cart_body.html", {
+        "cart": cart, "summary": price_summary(cart.get_total_price()),
+    }).content
+    response = HttpResponse(html)
+    response["X-Cart-Count"] = len(cart)
+    return response
+
+
 def cart_detail(request):
     cart = Cart(request)
     return render(request, "orders/cart.html", {"cart": cart, "summary": price_summary(cart.get_total_price())})
@@ -41,7 +58,10 @@ def cart_add(request, product_id):
             weight = Product.WEIGHT_OPTIONS[0]
     inscription = request.POST.get("inscription", "") if product.allows_inscription else ""
     qty = max(1, min(_parse_qty(request.POST.get("qty")), 50))
-    Cart(request).add(product.id, qty, weight=weight, inscription=inscription)
+    cart = Cart(request)
+    cart.add(product.id, qty, weight=weight, inscription=inscription)
+    if _is_ajax(request):
+        return JsonResponse({"ok": True, "cart_count": len(cart)})
     messages.success(request, "Savatga qo'shildi")
     next_url = request.POST.get("next", "")
     if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
@@ -52,14 +72,20 @@ def cart_add(request, product_id):
 @require_POST
 def cart_update(request, key):
     qty = _parse_qty(request.POST.get("qty"), default=None)
+    cart = Cart(request)
     if qty is not None:
-        Cart(request).update(key, min(qty, 50))
+        cart.update(key, min(qty, 50))
+    if _is_ajax(request):
+        return _cart_fragment_response(request, cart)
     return redirect("cart_detail")
 
 
 @require_POST
 def cart_remove(request, key):
-    Cart(request).remove(key)
+    cart = Cart(request)
+    cart.remove(key)
+    if _is_ajax(request):
+        return _cart_fragment_response(request, cart)
     return redirect("cart_detail")
 
 

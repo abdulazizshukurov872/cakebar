@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -96,22 +97,33 @@ def product_detail(request, product_id):
     })
 
 
+def _is_ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+
 @require_POST
 def favorite_toggle(request, product_id):
+    next_url = request.POST.get("next", "")
     if not request.user.is_authenticated:
-        messages.info(request, "Sevimlilarga qo'shish uchun avval tizimga kiring.")
-        next_url = request.POST.get("next", "")
         login_url = f"{reverse('login')}?next={next_url}" if next_url else reverse("login")
+        if _is_ajax(request):
+            return JsonResponse({"ok": False, "auth_required": True, "login_url": login_url})
+        messages.info(request, "Sevimlilarga qo'shish uchun avval tizimga kiring.")
         return redirect(login_url)
 
     product = get_object_or_404(Product, id=product_id)
     fav, created = Favorite.objects.get_or_create(user=request.user, product=product)
     if not created:
         fav.delete()
-        messages.success(request, "Sevimlilardan olib tashlandi")
+        is_favorite = False
+        message = "Sevimlilardan olib tashlandi"
     else:
-        messages.success(request, "Sevimlilarga qo'shildi")
-    next_url = request.POST.get("next", "")
+        is_favorite = True
+        message = "Sevimlilarga qo'shildi"
+
+    if _is_ajax(request):
+        return JsonResponse({"ok": True, "is_favorite": is_favorite})
+    messages.success(request, message)
     if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
         return redirect(next_url)
     return redirect("product_list")
