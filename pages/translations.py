@@ -45,6 +45,9 @@ TRANSLATIONS = {
         "login_hero_title": "Yana xush kelibsiz", "login_hero_subtitle": "Kabinetingizga kiring — sevimli shirinliklaringiz, buyurtmalaringiz va bonus ballaringiz bir joyda.",
         "login_lead": "Telefon raqam va parolingizni kiriting.",
         "show_password": "Ko'rsatish", "hide_password": "Yashirish",
+        "empty_favorites": "Sevimlilar ro'yxati bo'sh", "empty_favorites_sub": "Yoqqan mahsulotlarni yurakcha bosib shu yerga qo'shing.",
+        "empty_cart_sub": "Hali hech narsa tanlamagansiz — shirinliklarimizni ko'rib chiqing.",
+        "toast_added_cart": "Savatga qo'shildi", "toast_added_fav": "Sevimlilarga qo'shildi", "toast_removed_fav": "Sevimlilardan olib tashlandi",
     },
     "ru": {
         "home": "Главная", "products": "Товары", "my_orders": "Мои заказы",
@@ -92,6 +95,9 @@ TRANSLATIONS = {
         "login_hero_title": "С возвращением", "login_hero_subtitle": "Войдите в кабинет — любимые сладости, заказы и бонусы в одном месте.",
         "login_lead": "Введите номер телефона и пароль.",
         "show_password": "Показать", "hide_password": "Скрыть",
+        "empty_favorites": "Список избранного пуст", "empty_favorites_sub": "Нажмите на сердечко у понравившихся товаров, чтобы добавить их сюда.",
+        "empty_cart_sub": "Вы пока ничего не выбрали — посмотрите наши сладости.",
+        "toast_added_cart": "Добавлено в корзину", "toast_added_fav": "Добавлено в избранное", "toast_removed_fav": "Удалено из избранного",
     },
     "en": {
         "home": "Home", "products": "Products", "my_orders": "My Orders",
@@ -139,6 +145,9 @@ TRANSLATIONS = {
         "login_hero_title": "Welcome back", "login_hero_subtitle": "Sign in to your account — favorites, orders and bonus points in one place.",
         "login_lead": "Enter your phone number and password.",
         "show_password": "Show", "hide_password": "Hide",
+        "empty_favorites": "Your favorites list is empty", "empty_favorites_sub": "Tap the heart on products you like to add them here.",
+        "empty_cart_sub": "You haven't picked anything yet — browse our sweets.",
+        "toast_added_cart": "Added to cart", "toast_added_fav": "Added to favorites", "toast_removed_fav": "Removed from favorites",
     },
 }
 

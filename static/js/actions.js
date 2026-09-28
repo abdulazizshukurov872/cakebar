@@ -14,6 +14,20 @@
     if (el) el.textContent = "(" + count + ")";
   }
 
+  function showToast(text, icon) {
+    var stack = document.getElementById("toast-stack");
+    if (!stack || !text) return;
+    var toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerHTML = '<span class="toast-icon">' + (icon || "✓") + "</span><span>" + text + "</span>";
+    stack.appendChild(toast);
+    requestAnimationFrame(function () { toast.classList.add("show"); });
+    setTimeout(function () {
+      toast.classList.remove("show");
+      setTimeout(function () { toast.remove(); }, 250);
+    }, 2200);
+  }
+
   document.addEventListener("submit", function (e) {
     var form = e.target;
     if (!(form instanceof HTMLFormElement)) return;
@@ -42,6 +56,8 @@
               ? "♥ " + (favBtn.dataset.inFavorites || "Sevimlilarda")
               : "♡ " + (favBtn.dataset.addFavorites || "Sevimlilarga qo'shish");
           }
+          var body = document.body;
+          showToast(isFav ? body.dataset.toastAddedFav : body.dataset.toastRemovedFav, isFav ? "♥" : "♡");
         })
         .catch(function () { form.submit(); });
       return;
@@ -66,6 +82,7 @@
             addBtn.textContent = "✓";
             setTimeout(function () { addBtn.textContent = original; }, 900);
           }
+          showToast(document.body.dataset.toastAddedCart, "🛒");
         })
         .catch(function () { form.submit(); });
       return;

@@ -2,11 +2,18 @@
 {% load i18n_extra %}
 {% block account_content %}
 <h1 class="heading" style="margin-bottom:24px;">{% t "favorites" %}</h1>
+{% if products %}
 <div class="grid-2">
   {% for p in products %}
     {% include "catalog/_product_card.html" with p=p favorite_ids=favorite_ids %}
-  {% empty %}
-    <div class="empty-state">{% t "favorites" %}: 0</div>
   {% endfor %}
 </div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">🤍</div>
+  <div class="empty-state-title">{% t "empty_favorites" %}</div>
+  <div class="empty-state-sub">{% t "empty_favorites_sub" %}</div>
+  <a href="{% url 'product_list' %}" class="pill pill-dark">{% t "shop_now" %}</a>
+</div>
+{% endif %}
 {% endblock %}

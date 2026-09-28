@@ -21,7 +21,12 @@
       <div class="mono">{{ line.line_total|floatformat:0 }} so'm</div>
     </div>
   {% empty %}
-    <div class="empty-state">{% t "empty_cart" %}</div>
+    <div class="empty-state">
+      <div class="empty-state-icon">🛒</div>
+      <div class="empty-state-title">{% t "empty_cart" %}</div>
+      <div class="empty-state-sub">{% t "empty_cart_sub" %}</div>
+      <a href="{% url 'product_list' %}" class="pill pill-dark">{% t "shop_now" %}</a>
+    </div>
   {% endfor %}
 
   {% if cart|length %}

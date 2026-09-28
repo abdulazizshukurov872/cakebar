@@ -15,7 +15,8 @@
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body data-toast-added-cart="{% t 'toast_added_cart' %}" data-toast-added-fav="{% t 'toast_added_fav' %}" data-toast-removed-fav="{% t 'toast_removed_fav' %}">
+<div id="toast-stack" aria-live="polite"></div>
 
 <header class="nav">
   <div class="nav-inner">
