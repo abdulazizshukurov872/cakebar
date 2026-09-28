@@ -22,9 +22,13 @@ def env_int(name, default):
     return int(os.environ.get(name, default))
 
 
-# Railway / Render / Heroku set these — used so that forgetting CAKEBAR_DEBUG
-# on the server can never leave the live site in debug mode.
-IS_HOSTED = any(os.environ.get(v) for v in ("RAILWAY_ENVIRONMENT", "RENDER", "DYNO"))
+# Railway / Render / Heroku / PythonAnywhere set these — used so that
+# forgetting CAKEBAR_DEBUG on the server can never leave the live site in
+# debug mode.
+IS_HOSTED = any(
+    os.environ.get(v) for v in ("RAILWAY_ENVIRONMENT", "RENDER", "DYNO", "PYTHONANYWHERE_DOMAIN")
+)
+ON_PYTHONANYWHERE = bool(os.environ.get("PYTHONANYWHERE_DOMAIN"))
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -126,10 +130,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 DATABASE_URL = os.environ.get("CAKEBAR_DATABASE_URL") or os.environ.get("DATABASE_URL")
-if IS_HOSTED and not DATABASE_URL and not env_bool("CAKEBAR_ALLOW_SQLITE"):
-    # Hosting disks are wiped on every deploy — SQLite there silently loses
-    # every order and account. Attach PostgreSQL (or set CAKEBAR_ALLOW_SQLITE
-    # if the SQLite file lives on a persistent volume).
+if IS_HOSTED and not DATABASE_URL and not env_bool("CAKEBAR_ALLOW_SQLITE") and not ON_PYTHONANYWHERE:
+    # Container-based hosts (Railway/Render/Heroku) wipe their disk on every
+    # deploy — SQLite there silently loses every order and account. Attach
+    # PostgreSQL, or set CAKEBAR_ALLOW_SQLITE if the SQLite file genuinely
+    # lives on a persistent volume. PythonAnywhere's disk *is* persistent
+    # across deploys, so it's exempted here — SQLite there is fine and is
+    # what its free tier (no free Postgres/MySQL-only) is set up for.
     raise ImproperlyConfigured("Set CAKEBAR_DATABASE_URL (PostgreSQL) for the hosted site.")
 if DATABASE_URL:
     import dj_database_url
