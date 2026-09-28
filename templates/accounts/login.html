@@ -1,16 +1,33 @@
 {% extends "base.html" %}
 {% load i18n_extra %}
 {% block content %}
-<div class="section narrow">
-  <h1 class="heading" style="margin-bottom:24px;">{% t "login" %}</h1>
-  <div class="card">
+<div class="auth-wrap">
+  <div class="auth-visual">
+    <div class="display">{% t "login_hero_title" %}</div>
+    <p>{% t "login_hero_subtitle" %}</p>
+    <ul class="auth-benefits">
+      <li><span class="dot">⚡</span>{% t "signup_benefit_1" %}</li>
+      <li><span class="dot">🎁</span>{% t "signup_benefit_2" %}</li>
+      <li><span class="dot">📦</span>{% t "signup_benefit_3" %}</li>
+    </ul>
+  </div>
+  <div class="auth-form-panel">
+    <h1 class="heading">{% t "login" %}</h1>
+    <p class="auth-lead">{% t "login_lead" %}</p>
     <form method="post">
       {% csrf_token %}
       {{ form.non_field_errors }}
       {% for field in form %}
         <div class="form-row">
           {{ field.label_tag }}
-          {{ field }}
+          {% if field.name == "password" %}
+            <div class="password-field">
+              {{ field }}
+              <button type="button" class="password-toggle" data-toggle-for="{{ field.id_for_label }}" aria-label="{% t 'show_password' %}">👁</button>
+            </div>
+          {% else %}
+            {{ field }}
+          {% endif %}
           {{ field.errors }}
         </div>
       {% endfor %}
@@ -20,4 +37,15 @@
     <p style="margin-top:8px;font-size:14px;"><a href="{% url 'password_reset' %}" style="text-decoration:underline;">Parolni unutdingizmi?</a></p>
   </div>
 </div>
+<script>
+  document.querySelectorAll(".password-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var input = document.getElementById(btn.dataset.toggleFor);
+      if (!input) return;
+      var showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      btn.textContent = showing ? "👁" : "🙈";
+    });
+  });
+</script>
 {% endblock %}

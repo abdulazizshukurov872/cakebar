@@ -39,6 +39,12 @@ TRANSLATIONS = {
         "contact_admin": "Admin bilan bog'lanish", "chat_intro": "Savolingiz yoki muammoingiz bo'lsa, yozing — administrator 24 soat ichida ko'rib chiqadi.",
         "chat_placeholder": "Xabar yozing... (Enter — yuborish, Shift+Enter — yangi qator)", "chat_empty": "Hali xabar yo'q. Savolingiz bo'lsa, quyidan yozing.",
         "chat_you": "Siz", "chat_sent_notice": "Xabaringiz yuborildi. Administrator 24 soat ichida ko'rib chiqadi.", "send": "Yuborish",
+        "signup_hero_title": "Shirinlikka bir qadam qoldi", "signup_hero_subtitle": "Hisob oching — buyurtmalaringiz tarixi, bonus ballar va tezkor checkout sizni kutmoqda.",
+        "signup_benefit_1": "Bir necha soniyada buyurtma bering", "signup_benefit_2": "Har xariddan bonus ball to'plang",
+        "signup_benefit_3": "Buyurtmalar tarixini kuzatib boring", "signup_lead": "Bir necha maydon — va tayyor.",
+        "login_hero_title": "Yana xush kelibsiz", "login_hero_subtitle": "Kabinetingizga kiring — sevimli shirinliklaringiz, buyurtmalaringiz va bonus ballaringiz bir joyda.",
+        "login_lead": "Telefon raqam va parolingizni kiriting.",
+        "show_password": "Ko'rsatish", "hide_password": "Yashirish",
     },
     "ru": {
         "home": "Главная", "products": "Товары", "my_orders": "Мои заказы",
@@ -80,6 +86,12 @@ TRANSLATIONS = {
         "contact_admin": "Связаться с администратором", "chat_intro": "Если у вас есть вопрос или проблема, напишите — администратор ответит в течение 24 часов.",
         "chat_placeholder": "Напишите сообщение... (Enter — отправить, Shift+Enter — новая строка)", "chat_empty": "Сообщений пока нет. Если есть вопрос, напишите ниже.",
         "chat_you": "Вы", "chat_sent_notice": "Ваше сообщение отправлено. Администратор ответит в течение 24 часов.", "send": "Отправить",
+        "signup_hero_title": "До сладкого — один шаг", "signup_hero_subtitle": "Создайте аккаунт — история заказов, бонусные баллы и быстрый checkout уже ждут вас.",
+        "signup_benefit_1": "Оформляйте заказ за секунды", "signup_benefit_2": "Копите бонусные баллы с каждой покупки",
+        "signup_benefit_3": "Следите за историей заказов", "signup_lead": "Пара полей — и готово.",
+        "login_hero_title": "С возвращением", "login_hero_subtitle": "Войдите в кабинет — любимые сладости, заказы и бонусы в одном месте.",
+        "login_lead": "Введите номер телефона и пароль.",
+        "show_password": "Показать", "hide_password": "Скрыть",
     },
     "en": {
         "home": "Home", "products": "Products", "my_orders": "My Orders",
@@ -121,6 +133,12 @@ TRANSLATIONS = {
         "contact_admin": "Contact admin", "chat_intro": "Have a question or issue? Write below — admin will review it within 24 hours.",
         "chat_placeholder": "Write a message... (Enter — send, Shift+Enter — new line)", "chat_empty": "No messages yet. If you have a question, write below.",
         "chat_you": "You", "chat_sent_notice": "Your message has been sent. Admin will review it within 24 hours.", "send": "Send",
+        "signup_hero_title": "One step to sweetness", "signup_hero_subtitle": "Create an account — order history, bonus points and fast checkout are waiting.",
+        "signup_benefit_1": "Order in seconds", "signup_benefit_2": "Earn bonus points on every purchase",
+        "signup_benefit_3": "Track your order history", "signup_lead": "A few fields — and you're set.",
+        "login_hero_title": "Welcome back", "login_hero_subtitle": "Sign in to your account — favorites, orders and bonus points in one place.",
+        "login_lead": "Enter your phone number and password.",
+        "show_password": "Show", "hide_password": "Hide",
     },
 }
 

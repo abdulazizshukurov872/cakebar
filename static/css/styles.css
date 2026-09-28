@@ -174,6 +174,38 @@ form ul.errorlist { color: #c0392b; font-size: 13px; list-style: none; padding: 
 .helptext { font-size: 12px; color: var(--color-smoke); }
 .narrow { max-width: 440px; }
 
+/* ---------- AUTH (signup / login) ---------- */
+.auth-wrap {
+  max-width: 1040px; margin: 24px auto var(--section-gap); padding: 0 24px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-radius: 32px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.auth-visual {
+  background: var(--color-carbon-black); color: var(--color-paper-white);
+  padding: 56px 44px; display: flex; flex-direction: column; justify-content: center;
+}
+.auth-visual .display { font-family: var(--font-cond); font-size: 42px; line-height: 1.05; text-transform: uppercase; margin-bottom: 16px; }
+.auth-visual p { color: var(--color-ash); font-size: 15px; line-height: 1.5; margin-bottom: 28px; }
+.auth-benefits { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.auth-benefits li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; }
+.auth-benefits .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--color-mint-chip); color: var(--color-carbon-black); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+.auth-form-panel { background: var(--color-paper-white); padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
+.auth-form-panel .heading { margin-bottom: 8px; }
+.auth-form-panel .auth-lead { color: var(--color-smoke); font-size: 14px; margin-bottom: 28px; }
+.password-field { position: relative; }
+.password-field input { padding-right: 46px; }
+.password-toggle {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 8px; font-size: 16px; color: var(--color-smoke); line-height: 1;
+}
+.password-toggle:hover { color: var(--color-carbon-black); }
+@media (max-width: 860px) {
+  .auth-wrap { grid-template-columns: 1fr; border-radius: 24px; margin: 16px auto var(--section-gap); }
+  .auth-visual { padding: 36px 28px 28px; }
+  .auth-visual .display { font-size: 32px; }
+  .auth-form-panel { padding: 32px 28px 40px; }
+}
+
 /* ---------- CART / ORDERS ---------- */
 .cart-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--color-mist-gray); align-items: center; }
 .cart-item-img { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; background: var(--color-mist-gray); flex-shrink: 0; }
