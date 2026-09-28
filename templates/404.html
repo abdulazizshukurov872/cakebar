@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n_extra %}
+{% block title %}404 — CakeBar{% endblock %}
+{% block content %}
+<div class="section narrow" style="text-align:center;padding:80px 24px;">
+  <div class="display" style="font-size:96px;line-height:1;margin-bottom:16px;">🍰</div>
+  <h1 class="heading" style="margin-bottom:12px;">404</h1>
+  <p style="color:var(--color-slate);margin-bottom:24px;">
+    {% if CUR_LANG == "ru" %}Такой страницы нет — возможно, ссылка устарела.
+    {% elif CUR_LANG == "en" %}This page doesn't exist — the link may be outdated.
+    {% else %}Bunday sahifa topilmadi — havola eskirgan bo'lishi mumkin.{% endif %}
+  </p>
+  <a href="{% url 'home' %}" class="pill pill-dark">{% t "home" %}</a>
+</div>
+{% endblock %}
