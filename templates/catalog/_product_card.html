@@ -28,12 +28,12 @@
       <div style="display:flex;gap:6px;">
         <form method="post" action="{% url 'favorite_toggle' p.id %}">
           {% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.path }}">
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="fav-btn {% if p.id in favorite_ids %}active{% endif %}" title="Sevimlilarga">{% if p.id in favorite_ids %}♥{% else %}♡{% endif %}</button>
         </form>
         <form method="post" action="{% url 'cart_add' p.id %}">
           {% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.path }}">
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <button type="submit" class="pill pill-dark pill-sm" {% if not p.in_stock %}disabled{% endif %}>{% t "add_to_cart" %}</button>
         </form>
       </div>
